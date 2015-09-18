@@ -1,0 +1,4 @@
+{
+    // Path to your c headers files...
+    "PATHS_HEADERS" : [],
+}

@@ -1,4 +1,4 @@
-C-headers.
+CHeaders.
 ==========
 
 Its a sublime text plugin, that will help you to find
