@@ -29,7 +29,7 @@ class CompleteCHeaders(sublime_plugin.EventListener):
             self._settings_paths = _settings.get("PATHS_HEADERS", [])
         self._paths = copy.deepcopy(self._settings_paths)
 
-        # wrappers
+        # include wrappers
         self._include_wrapper_files = "#include <%s>"
         self._include_wrapper_dirs = "#include <%s/"
 
@@ -54,6 +54,7 @@ class CompleteCHeaders(sublime_plugin.EventListener):
                                 self._cpp_libs.append(
                                     (_caption + "\tmodule", _r)
                                 )
+                    break
 
     @property
     def _view(self):
@@ -66,6 +67,10 @@ class CompleteCHeaders(sublime_plugin.EventListener):
     @staticmethod
     def _parse_response():
         return ("_caption", "_result")
+
+    @staticmethod
+    def _find_substring(viewsubstr, location):
+        pass
 
     def on_query_context(self, view, key, operator, operand, match_all):
         pass
