@@ -22,7 +22,7 @@ class LoadPluginCommand(sublime_plugin.WindowCommand):
         sublime_plugin.reload_plugin(__name__)
 
 
-class CompleteCHeaders(sublime_plugin.EventListener):
+class CompleteCHeadersCommand(sublime_plugin.EventListener):
 
     def __init__(self):
         sublime_plugin.EventListener.__init__(self)
@@ -168,9 +168,6 @@ http://sourceforge.net/projects/mingw/files/"""
                 _r = header + ">"
 
         return _caption, _r
-
-    def on_query_context(self, view, key, operator, operand, match_all):
-        pass
 
     def on_query_completions(self, view, prefix, location):
         result = []
