@@ -168,27 +168,30 @@ class CompleteCHeaders(sublime_plugin.EventListener):
                 for _p in self._settings_paths:
                     self._paths.append(_p)
 
-            # if the file extention is .c
-            # result will not have c++ standart libraries...
-            if not re.search(r"\.c$", file_name):
+            # if is linux
+            if self.is_linux:
+
+                # if the file extention is .c
+                # result will not have c++ standart libraries...
+                if not re.search(r"\.c$", file_name):
+                    if self._is_main_path():
+                        for _p in self._cpp_gnu_h:
+                            _r = self._parse_result(
+                                substr,
+                                _p,
+                                self._cpp_gnu_h[_p])
+
+                            result.append(_r)
+
+                # adding linux gnu libs
                 if self._is_main_path():
-                    for _p in self._cpp_gnu_h:
+                    for _p in self._linux_gnu_h:
                         _r = self._parse_result(
                             substr,
                             _p,
-                            self._cpp_gnu_h[_p])
+                            self._linux_gnu_h[_p])
 
                         result.append(_r)
-
-            # adding linux gnu libs
-            if self._is_main_path() and self.is_linux:
-                for _p in self._linux_gnu_h:
-                    _r = self._parse_result(
-                        substr,
-                        _p,
-                        self._linux_gnu_h[_p])
-
-                    result.append(_r)
 
             for path in self._paths:
                 _glob_result = glob.glob(path + prefix + "*")
