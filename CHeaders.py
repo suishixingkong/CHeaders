@@ -36,7 +36,9 @@ class CompleteCHeaders(sublime_plugin.EventListener):
             # cpp windows supported version 4.8.1
 
             if not os.path.exists("C:\\Mingw"):
-                sublime.error_message("You should download Mingw")
+                error_msg = """You should download Mingw, this is the webpage:
+http://sourceforge.net/projects/mingw/files/"""
+                sublime.error_message(error_msg)
             else:
                 self._settings_paths.append("C:\\Mingw\\include\\")
                 self._settings_paths.append("C:\\MinGW\\mingw32\\include\\")

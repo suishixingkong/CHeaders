@@ -5,6 +5,13 @@ Its a sublime text plugin, that will help you to find
 clang headers...
 
 
+Usage.
+======
+
+If the plugin does not work well, just write Ctrl+shift+p(linux, windows)
+find **CHeaders: Load Plugin"" and press enter, then, the plugin will work correctly...
+
+
 LICENCE.
 ========
 
