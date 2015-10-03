@@ -33,6 +33,12 @@ class CompleteCHeaders(sublime_plugin.EventListener):
             self._settings_paths.append("/usr/local/include/")
         if self.is_window:
             self._settings_paths.append("C:\\Mingw\\include\\")
+            self._settings_paths.append("C:\\MinGW\\mingw32\\include\\")
+            self._settings_paths.append("C:\\MinGW\\msys\\1.0\\include\\")
+            self._settings_paths.append(
+                "C:\\MinGW\\mingw32\\lib\\gcc\\mingw32\\4.8.1\\include\\")
+            self._settings_paths.append(
+                "C:\\MinGW\\mingw32\\lib\\gcc\\mingw32\\4.8.1\\include-fixed\\")
 
         self._paths = copy.deepcopy(self._settings_paths)
 
@@ -56,17 +62,9 @@ class CompleteCHeaders(sublime_plugin.EventListener):
                     break
 
             for _f in glob.glob(self._cpp_path + self._cpp_version + "/*"):
-                if os.path.isdir(_f):
-                    _caption = _caption = _f.rsplit("/", 1)[1]
-                    self._cpp_gnu_h.update(
-                        {_caption: "directory"}
-                    )
-                elif os.path.isfile(_f):
-                    _caption = _f.rsplit("/", 1)[1]
-                    self._cpp_gnu_h.update(
-                        {_caption: "module"}
-                    )
-            self._cpp_path += v + "/"
+                self._cpp_gnu_h.update(self._update(_f))
+
+            self._cpp_path += v + os.sep
 
             # looking for linux gnu headers
             # as sys/socket.h ...
@@ -74,20 +72,16 @@ class CompleteCHeaders(sublime_plugin.EventListener):
             self._linux_gnu_path = "/usr/include/i386-linux-gnu/"
 
             for _f in glob.glob(self._linux_gnu_path + "*"):
-                if os.path.isdir(_f):
+                self._linux_gnu_h.update(self._update(_f))
 
-                    _caption = _f.replace(self._linux_gnu_path, "")
+        if self.is_window:
 
-                    self._linux_gnu_h.update(
-                        {_caption: "directory"}
-                    )
-                if os.path.isfile(_f):
+            # cpp windows supported version 4.8.1
+            self._cpp_windows_h = {}
+            self._cpp_path = "C:\\MinGW\\mingw32\\lib\\gcc\\mingw32\\4.8.1\\include\\c++\\"
 
-                    _caption = _f.replace(self._linux_gnu_path, "")
-
-                    self._linux_gnu_h.update(
-                        {_caption: "module"}
-                    )
+            for _f in glob.glob(self._cpp_path + "*"):
+                self._cpp_windows_h.update(self._update(_f))
 
     @property
     def is_linux(self):
@@ -95,11 +89,27 @@ class CompleteCHeaders(sublime_plugin.EventListener):
 
     @property
     def is_window(self):
-        return sublime.platform() == "window"
+        return sublime.platform() == "windows"
 
     @property
     def _view(self):
         return sublime.active_window().active_view()
+
+    @property
+    def _is_main_path(self):
+        for _sp in self._settings_paths:
+            if _sp in self._paths:
+                return True
+        return
+
+    @staticmethod
+    def _update(file):
+        if os.path.isdir(file):
+            caption = file.rsplit(os.sep, 1)[1]
+            return {caption: "directory"}
+        if os.path.isfile(file):
+            caption = file.rsplit(os.sep, 1)[1]
+            return {caption: "module"}
 
     @staticmethod
     def _find_substring(view, location):
@@ -113,12 +123,6 @@ class CompleteCHeaders(sublime_plugin.EventListener):
         return view.substr(
             sublime.Region(0, location)
         )
-
-    def _is_main_path(self):
-        for _sp in self._settings_paths:
-            if _sp in self._paths:
-                return True
-        return
 
     def _parse_result(self, substr, header, type):
         _caption = header + '\t' + type
@@ -143,7 +147,6 @@ class CompleteCHeaders(sublime_plugin.EventListener):
         regex = r"(\.(c|cp{2}|c{2}|c\+{2}|cx{2}|C|CP{2}|cp))$"
         file_name = view.name() or view.file_name()
         substr = ""
-
         if re.search(regex, file_name):
 
             substr = self._find_substring(view, location[0])
@@ -154,20 +157,27 @@ class CompleteCHeaders(sublime_plugin.EventListener):
                 start = rx.start()
                 end = rx.end()
 
-                for i, _p in enumerate(self._settings_paths):
-                    if os.path.exists(_p + substr[start:end] + '/'):
-                        self._paths.append(_p + substr[start:end] + '/')
+                for _p in self._settings_paths:
+                    _f = _p + substr[start:end] + os.sep
+                    if os.path.exists(_f):
+                        self._paths.append(_f)
 
                 # if is linux
                 if self.is_linux:
 
-                    # adding cpp headers path to self._paths
-                    _f = self._cpp_path + substr[start:end] + '/'
+                    # add cpp linux headers path to self._paths
+                    _f = self._cpp_path + substr[start:end] + os.sep
                     if os.path.exists(_f):
                         self._paths.append(_f)
 
                     # add linux gnu headers path to self._paths
-                    _f = self._linux_gnu_path + substr[start:end] + '/'
+                    _f = self._linux_gnu_path + substr[start:end] + os.sep
+                    if os.path.exists(_f):
+                        self._paths.append(_f)
+
+                if self.is_window:
+                    # add cpp window headers to self._paths
+                    _f = self._cpp_path + substr[start:end] + os.sep
                     if os.path.exists(_f):
                         self._paths.append(_f)
 
@@ -176,13 +186,24 @@ class CompleteCHeaders(sublime_plugin.EventListener):
                 for _p in self._settings_paths:
                     self._paths.append(_p)
 
+            if self.is_window:
+                if self._is_main_path:
+                    for _p in self._cpp_windows_h:
+                        _r = self._parse_result(
+                            substr,
+                            _p,
+                            self._cpp_windows_h[_p]
+                        )
+                        result.append(_r)
+
             # if is linux
             if self.is_linux:
 
-                # if the file extention is .c
-                # result will not have c++ standart libraries...
-                if not re.search(r"\.c$", file_name):
-                    if self._is_main_path():
+                if self._is_main_path:
+
+                    # if the file extention is .c
+                    # result will not have c++ standart libraries...
+                    if not re.search(r"\.c$", file_name):
                         for _p in self._cpp_gnu_h:
                             _r = self._parse_result(
                                 substr,
@@ -191,8 +212,7 @@ class CompleteCHeaders(sublime_plugin.EventListener):
 
                             result.append(_r)
 
-                # adding linux gnu libs
-                if self._is_main_path():
+                    # adding linux gnu libs
                     for _p in self._linux_gnu_h:
                         _r = self._parse_result(
                             substr,
