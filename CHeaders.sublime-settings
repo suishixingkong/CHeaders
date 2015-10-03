@@ -1,4 +1,11 @@
 {
     // Path to your c headers files...
+    // example linux: 
+    // 		/home/leoxnidas/include/
+    // 		~/include/
+    // 		$HOME/include/
+    // example window: 
+    // 		C:\
+    // 		%HOME% <= Same => C:\
     "PATHS_HEADERS" : [],
 }
