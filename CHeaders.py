@@ -27,6 +27,13 @@ class CompleteCHeaders(sublime_plugin.EventListener):
         if not self._settings_paths:
             _settings = self._view.settings()
             self._settings_paths = _settings.get("PATHS_HEADERS", [])
+
+        if self.is_linux:
+            self._settings_paths.append("/usr/include/")
+            self._settings_paths.append("/usr/local/include/")
+        if self.is_window:
+            self._settings_paths.append("C:\\Mingw\\include\\")
+
         self._paths = copy.deepcopy(self._settings_paths)
 
         # include wrappers
@@ -151,14 +158,15 @@ class CompleteCHeaders(sublime_plugin.EventListener):
                     if os.path.exists(_p + substr[start:end] + '/'):
                         self._paths.append(_p + substr[start:end] + '/')
 
-                # adding cpp headers path to self._paths
-                if os.path.exists(self._cpp_path + substr[start:end] + '/'):
-                    self._paths.append(
-                        self._cpp_path + substr[start:end] + '/')
-
-                # if system is linux
-                # add linux-gnu headers path to self._paths
+                # if is linux
                 if self.is_linux:
+
+                    # adding cpp headers path to self._paths
+                    _f = self._cpp_path + substr[start:end] + '/'
+                    if os.path.exists(_f):
+                        self._paths.append(_f)
+
+                    # add linux gnu headers path to self._paths
                     _f = self._linux_gnu_path + substr[start:end] + '/'
                     if os.path.exists(_f):
                         self._paths.append(_f)
