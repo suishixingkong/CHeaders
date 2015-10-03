@@ -28,9 +28,12 @@ class CompleteCHeaders(sublime_plugin.EventListener):
             _settings = self._view.settings()
             self._settings_paths = _settings.get("PATHS_HEADERS", [])
 
+        self._settings_paths = self._parse_settings(self._settings_paths)
+
         if self.is_linux:
             self._settings_paths.append("/usr/include/")
             self._settings_paths.append("/usr/local/include/")
+
         if self.is_window:
 
             # cpp windows supported version 4.8.1
@@ -110,6 +113,18 @@ http://sourceforge.net/projects/mingw/files/"""
             if _sp in self._paths:
                 return True
         return
+
+    def _parse_settings(self, settings):
+        _settings = []
+        for _setting in settings:
+            if _setting.startswith("~"):
+                _setting = _setting.replace("~", os.environ["HOME"])
+            if _setting.startswith("$HOME"):
+                _setting = _setting.replace("$HOME", os.environ["HOME"])
+            if _setting.startswith("%HOME%"):
+                _setting = _setting.replace("%HOME%", "C:\\")
+            _settings.append(_setting)
+        return _settings
 
     @staticmethod
     def _update(file):
@@ -199,14 +214,13 @@ http://sourceforge.net/projects/mingw/files/"""
 
                 # if is windows
                 if self.is_window:
-                    if self._is_main_path:
-                        for _p in self._cpp_windows_h:
-                            _r = self._parse_result(
-                                substr,
-                                _p,
-                                self._cpp_windows_h[_p]
-                            )
-                            result.append(_r)
+                    for _p in self._cpp_windows_h:
+                        _r = self._parse_result(
+                            substr,
+                            _p,
+                            self._cpp_windows_h[_p]
+                        )
+                        result.append(_r)
 
                 # if is linux
                 if self.is_linux:
@@ -242,12 +256,14 @@ http://sourceforge.net/projects/mingw/files/"""
                                 )
                                 result.append(_r)
                             elif os.path.isfile(item):
-                                _r = self._parse_result(
-                                    substr,
-                                    item.replace(path, ""),
-                                    "module"
-                                )
-                                result.append(_r)
+                                rx = re.search(r"\.h$", item)
+                                if rx:
+                                    _r = self._parse_result(
+                                        substr,
+                                        item.replace(path, ""),
+                                        "module"
+                                    )
+                                    result.append(_r)
 
         return result
 
