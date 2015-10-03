@@ -10,6 +10,11 @@ SETTINGS_FILE = 'CHeaders.sublime-settings'
 settings = {}
 
 
+def plugin_loaded():
+    global settings
+    settings = sublime.load_settings(SETTINGS_FILE)
+
+
 class LoadPluginCommand(sublime_plugin.WindowCommand):
 
     def run(self, **kwargs):
@@ -114,7 +119,8 @@ http://sourceforge.net/projects/mingw/files/"""
                 return True
         return
 
-    def _parse_settings(self, settings):
+    @staticmethod
+    def _parse_settings(settings):
         _settings = []
         for _setting in settings:
             if _setting.startswith("~"):
@@ -256,7 +262,7 @@ http://sourceforge.net/projects/mingw/files/"""
                                 )
                                 result.append(_r)
                             elif os.path.isfile(item):
-                                rx = re.search(r"\.h$", item)
+                                rx = re.search(r"(\.h|.(?!\.\w+))", item)
                                 if rx:
                                     _r = self._parse_result(
                                         substr,
@@ -266,10 +272,3 @@ http://sourceforge.net/projects/mingw/files/"""
                                     result.append(_r)
 
         return result
-
-
-def plugin_loaded():
-    global settings
-    settings = sublime.load_settings(SETTINGS_FILE)
-
-plugin_loaded()
