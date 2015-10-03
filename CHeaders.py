@@ -32,14 +32,21 @@ class CompleteCHeaders(sublime_plugin.EventListener):
             self._settings_paths.append("/usr/include/")
             self._settings_paths.append("/usr/local/include/")
         if self.is_window:
-            self._settings_paths.append("C:\\Mingw\\include\\")
-            self._settings_paths.append("C:\\MinGW\\mingw32\\include\\")
-            self._settings_paths.append("C:\\MinGW\\msys\\1.0\\include\\")
-            self._settings_paths.append(
-                "C:\\MinGW\\mingw32\\lib\\gcc\\mingw32\\4.8.1\\include\\")
-            self._settings_paths.append(
-                "C:\\MinGW\\mingw32\\lib\\gcc\\mingw32\\4.8.1\\include-fixed\\")
 
+            # cpp windows supported version 4.8.1
+
+            if not os.path.exists("C:\\Mingw"):
+                sublime.error_message("You should download Mingw")
+            else:
+                self._settings_paths.append("C:\\Mingw\\include\\")
+                self._settings_paths.append("C:\\MinGW\\mingw32\\include\\")
+                self._settings_paths.append("C:\\MinGW\\msys\\1.0\\include\\")
+                self._settings_paths.append(
+                    "C:\\MinGW\\mingw32\\lib\\gcc\\mingw32\\4.8.1\\include\\")
+                self._settings_paths.append(
+                    "C:\\MinGW\\mingw32\\lib\\gcc\\mingw32\\4.8.1\\include-fixed\\")
+
+        # this list will contain a copy of self._settings_paths
         self._paths = copy.deepcopy(self._settings_paths)
 
         # include wrappers
@@ -76,7 +83,7 @@ class CompleteCHeaders(sublime_plugin.EventListener):
 
         if self.is_window:
 
-            # cpp windows supported version 4.8.1
+            # looking for c++ headers
             self._cpp_windows_h = {}
             self._cpp_path = "C:\\MinGW\\mingw32\\lib\\gcc\\mingw32\\4.8.1\\include\\c++\\"
 
@@ -186,23 +193,22 @@ class CompleteCHeaders(sublime_plugin.EventListener):
                 for _p in self._settings_paths:
                     self._paths.append(_p)
 
-            if self.is_window:
-                if self._is_main_path:
-                    for _p in self._cpp_windows_h:
-                        _r = self._parse_result(
-                            substr,
-                            _p,
-                            self._cpp_windows_h[_p]
-                        )
-                        result.append(_r)
+            if self._is_main_path:
 
-            # if is linux
-            if self.is_linux:
+                # if is windows
+                if self.is_window:
+                    if self._is_main_path:
+                        for _p in self._cpp_windows_h:
+                            _r = self._parse_result(
+                                substr,
+                                _p,
+                                self._cpp_windows_h[_p]
+                            )
+                            result.append(_r)
 
-                if self._is_main_path:
+                # if is linux
+                if self.is_linux:
 
-                    # if the file extention is .c
-                    # result will not have c++ standart libraries...
                     if not re.search(r"\.c$", file_name):
                         for _p in self._cpp_gnu_h:
                             _r = self._parse_result(
