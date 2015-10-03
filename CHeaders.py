@@ -88,7 +88,7 @@ class CompleteCHeaders(sublime_plugin.EventListener):
 
     @property
     def is_window(self):
-        return sublime.sublime.platform() == "window"
+        return sublime.platform() == "window"
 
     @property
     def _view(self):
