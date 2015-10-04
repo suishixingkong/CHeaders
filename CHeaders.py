@@ -174,6 +174,7 @@ http://sourceforge.net/projects/mingw/files/"""
         regex = r"(\.(c|cp{2}|c{2}|c\+{2}|cx{2}|C|CP{2}|cp))$"
         file_name = view.name() or view.file_name()
         substr = ""
+
         if re.search(regex, file_name):
 
             substr = self._find_substring(view, location[0])
@@ -228,6 +229,7 @@ http://sourceforge.net/projects/mingw/files/"""
                 # if is linux
                 if self.is_linux:
 
+                    # if a file c , cpp headers will not be displayed .
                     if not re.search(r"\.c$", file_name):
                         for _p in self._cpp_gnu_h:
                             _r = self._parse_result(
@@ -268,4 +270,5 @@ http://sourceforge.net/projects/mingw/files/"""
                                     )
                                     result.append(_r)
 
+        result.append(("tab", "\t"))
         return result
