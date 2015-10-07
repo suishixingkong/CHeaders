@@ -261,7 +261,7 @@ http://sourceforge.net/projects/mingw/files/"""
                                 )
                                 result.append(_r)
                             elif os.path.isfile(item):
-                                rx = re.search(r"(\.h|.(?!\.\w+))", item)
+                                rx = re.search(r"(\.h|.(?!\.\w+)|\.hpp)", item)
                                 if rx:
                                     _r = self._parse_result(
                                         substr,
