@@ -8,11 +8,11 @@ By default, CHeaders will find c/c++ headers at default
 locations, both windows and linux.
 
 ###Linux default locations.
-**/usr/include**
-**/usr/local/include**
+- [x] /usr/include
+- [x] /usr/local/include
 
 ###Window default locations.
-**C:\\Mingw\\include**
+- [x] C:\\Mingw\\include
 
 
 Usage.
