@@ -1,15 +1,42 @@
 CHeaders.
 ==========
 
-Its a sublime text plugin, that will help you to find
-clang headers...
+CHeaders it's a open source sublime text plugin, designed 
+to help you to find c/c++ headers files.
+
+By default, CHeaders will find c/c++ headers at default 
+locations, both windows and linux.
+
+###Linux default locations.
+**/usr/include**
+**/usr/local/include**
+
+###Window default locations.
+**C:\\Mingw\\include**
 
 
 Usage.
 ======
 
-If the plugin does not work well, just write Ctrl+shift+p(linux, windows)
-find **CHeaders: Load Plugin"" and press enter, then, the plugin will work correctly...
+If the plugin does not work well, just press Ctrl+shift+p(linux, windows), then
+find the command **CHeaders: Load Plugin** and press enter, and then, the CHeaders 
+plugin shall work correctly...
+
+![example](./images/img.png)
+
+
+Configuring.
+============
+
+For adding additional c/c++ headers files paths
+to CHeaders, just add the path to PATH_HEADERS.
+
+```json
+{
+    "PATHS_HEADERS" : ["~/Desktop/project/include"],
+}
+```
+
 
 
 LICENCE.
