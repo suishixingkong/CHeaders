@@ -151,7 +151,7 @@ http://sourceforge.net/projects/mingw/files/"""
                                    location)
                 )
         return view.substr(
-            sublime.Region(0, location)
+            sublime.Region(0, 1)
         )
 
     def _parse_result(self, substr, header, type):
@@ -261,7 +261,7 @@ http://sourceforge.net/projects/mingw/files/"""
                                 )
                                 result.append(_r)
                             elif os.path.isfile(item):
-                                rx = re.search(r"(\.h|.(?!\.\w+)|\.hpp)", item)
+                                rx = re.search(r"(\.h|.(?!\.\w+)|\.hpp|\.hxx)", item)
                                 if rx:
                                     _r = self._parse_result(
                                         substr,
