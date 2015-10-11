@@ -150,9 +150,30 @@ http://sourceforge.net/projects/mingw/files/"""
                     sublime.Region(location - (x + 1) + len(">\n"),
                                    location)
                 )
+            if _sub.startswith("\"\n"):
+                return view.substr(
+                    sublime.Region(location - (x + 1) + len("\"\n"),
+                                   location)
+                )
+            if _sub.startswith("#include <" + _sub.replace("#include <", "")):
+                _str = "#include <" + _sub.replace("#include <", "")
+                return view.substr(
+                    sublime.Region(location - (len(_str) + 1),
+                                   location)
+                )
+            if _sub.startswith("#include \"" + _sub.replace("#include \"", "")):
+                _str = "#include \"" + _sub.replace("#include \"", "")
+                return view.substr(
+                    sublime.Region(location - (len(_str) + 1),
+                                   location)
+                )
         return view.substr(
             sublime.Region(0, 1)
         )
+
+    @staticmethod
+    def _looking_project_headers():
+        pass
 
     def _parse_result(self, substr, header, type):
         _caption = header + '\t' + type
@@ -170,16 +191,17 @@ http://sourceforge.net/projects/mingw/files/"""
         return _caption, _r
 
     def on_query_completions(self, view, prefix, location):
+        regex_c_cpp_files = r"(\.(c|cp{2}|c{2}|c\+{2}|cx{2}|C|CP{2}|cp))$"
         result = []
-        regex = r"(\.(c|cp{2}|c{2}|c\+{2}|cx{2}|C|CP{2}|cp))$"
         file_name = view.name() or view.file_name()
         substr = ""
 
-        if re.search(regex, file_name):
+        if re.search(regex_c_cpp_files, file_name):
 
             substr = self._find_substring(view, location[0])
             rx = re.search(r"(\w+(-*\.*\w+/*|/\w+)*(?=/))", substr)
 
+            print(substr)
             if rx:
                 self._paths = []
                 start = rx.start()

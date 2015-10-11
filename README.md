@@ -2,7 +2,8 @@ CHeaders.
 ==========
 
 CHeaders it's a open source sublime text plugin, designed 
-to help you to find c/c++ headers files.
+to help you to find c/c++ headers files and mingw, gnu, microsoft 
+macros.
 
 By default, CHeaders will find c/c++ headers at default 
 locations, both windows and linux.
