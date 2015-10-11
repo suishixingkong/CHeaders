@@ -7,18 +7,20 @@ to help you to find c/c++ headers files.
 By default, CHeaders will find c/c++ headers at default 
 locations, both windows and linux.
 
-###Linux default locations.
+####Linux default locations.
 - [x] /usr/include
 - [x] /usr/local/include
 
-###Window default locations.
+####Window default locations.
 - [x] C:\\Mingw\\include
 
+Note: if you don't have Mingw at C:\\, you shall add the Mingw path 
+to PATHS_HEADERS, at user settings.
 
 Usage.
 ======
 
-All you need to do is write the library you want to look.
+All you need to do is write the library you want to search.
 
 ![example_complention](./images/img2.png)
 ![example_complention2](./images/img3.png)
