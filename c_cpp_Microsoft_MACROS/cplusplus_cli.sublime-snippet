@@ -1,0 +1,24 @@
+<!-- 
+
+Defined when you compile with /clr, /clr:pure, or /clr:safe. Value of __cplusplus_cli is the integer literal 200406. __cplusplus_cli is in effect throughout the translation unit.
+
+// cplusplus_cli.cpp
+// compile with: /clr
+#include "stdio.h"
+int main() {
+   #ifdef __cplusplus_cli
+      printf("%d\n", __cplusplus_cli);
+   #else
+      printf("not defined\n");
+   #endif
+}
+
+-->
+<snippet>
+	<content><![CDATA[
+__cplusplus_cli
+]]></content>
+	<tabTrigger>__cplusplus_cli</tabTrigger>
+	<scope>source.c, source.c++</scope>
+	<description>Microsoft MACRO</description>
+</snippet>

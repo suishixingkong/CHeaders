@@ -1,0 +1,12 @@
+<!-- 
+
+
+-->
+<snippet>
+    <content><![CDATA[
+__clang_patchlevel__
+]]></content>
+    <tabTrigger>__clang_patchlevel__</tabTrigger>
+    <scope>source.c, source.c++</scope>
+    <description>CLANG MACRO</description>
+</snippet>

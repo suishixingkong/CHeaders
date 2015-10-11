@@ -1,0 +1,13 @@
+<!-- 
+
+Defined for compilations that target ARM processors.
+
+-->
+<snippet>
+	<content><![CDATA[
+_M_ARM
+]]></content>
+	<tabTrigger>_M_ARM</tabTrigger>
+	<scope>source.c, source.c++</scope>
+	<description>Microsoft MACRO</description>
+</snippet>

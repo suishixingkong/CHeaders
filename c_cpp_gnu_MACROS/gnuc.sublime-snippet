@@ -1,0 +1,8 @@
+<snippet>
+	<content><![CDATA[
+__GNUC__
+]]></content>
+	<tabTrigger>__GNUC__</tabTrigger>
+	<scope>source.c, source.c++</scope>
+	<description>GNU MACRO</description>
+</snippet>

@@ -1,0 +1,12 @@
+<!-- 
+
+
+-->
+<snippet>
+    <content><![CDATA[
+__clang__
+]]></content>
+    <tabTrigger>__clang__</tabTrigger>
+    <scope>source.c, source.c++</scope>
+    <description>CLANG MACRO</description>
+</snippet>

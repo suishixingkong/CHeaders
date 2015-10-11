@@ -1,0 +1,17 @@
+<!-- 
+
+Valid only in a function. Defines the undecorated name of the enclosing function as a string literal.
+
+__FUNCTION__ is not expanded if you use the /EP or /P compiler option.
+
+See __FUNCDNAME__ for an example.
+
+-->
+<snippet>
+	<content><![CDATA[
+__FUNCTION__
+]]></content>
+	<tabTrigger>__FUNCTION__</tabTrigger>
+	<scope>source.c, source.c++</scope>
+	<description>Microsoft MACRO</description>
+</snippet>

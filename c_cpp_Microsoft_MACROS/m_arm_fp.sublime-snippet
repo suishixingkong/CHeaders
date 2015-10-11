@@ -1,0 +1,19 @@
+<!-- 
+	
+Expands to an integer literal value indicating which /arch compiler option was used:
+
+    In the range 30-39 if no /arch ARM option was specified, indicating the default architecture for ARM was used (VFPv3).
+
+    In the range 40-49 if /arch:VFPv4 was used.
+
+    See /arch (x86) for more information.
+
+-->
+<snippet>
+	<content><![CDATA[
+_M_ARM_FP
+]]></content>
+	<tabTrigger>_M_ARM_FP</tabTrigger>
+	<scope>source.c, source.c++</scope>
+	<description>Microsoft MACRO</description>
+</snippet>

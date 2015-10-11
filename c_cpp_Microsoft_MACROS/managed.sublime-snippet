@@ -1,0 +1,13 @@
+<!-- 
+	
+Defined to be 1 when /clr is specified.
+
+-->
+<snippet>
+	<content><![CDATA[
+_MANAGED
+]]></content>
+	<tabTrigger>_MANAGED</tabTrigger>
+	<scope>source.c, source.c++</scope>
+	<description>Microsoft MACRO</description>
+</snippet>

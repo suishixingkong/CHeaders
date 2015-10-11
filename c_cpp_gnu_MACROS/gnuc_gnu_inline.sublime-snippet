@@ -1,0 +1,13 @@
+<!-- 
+
+GCC defines this macro if functions declared inline will be handled in GCC's traditional gnu90 mode. Object files will contain externally visible definitions of all functions declared inline without extern or static. They will not contain any definitions of any functions declared extern inline. 
+
+-->
+<snippet>
+	<content><![CDATA[
+__GNUC_GNU_INLINE__
+]]></content>
+	<tabTrigger>__GNUC_GNU_INLINE__</tabTrigger>
+	<scope>source.c, source.c++</scope>
+	<description>GNU MACRO</description>
+</snippet>

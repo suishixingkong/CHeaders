@@ -1,0 +1,15 @@
+<!-- 
+
+This macro is defined to indicate the intended level of support for IEEE 754 (IEC 60559) floating-point arithmetic. It expands to a nonnegative integer value. If 0, it indicates that the combination of the compiler configuration and the command-line options is not intended to support IEEE 754 arithmetic for float and double as defined in C99 and C11 Annex F (for example, that the standard rounding modes and exceptions are not supported, or that optimizations are enabled that conflict with IEEE 754 semantics). If 1, it indicates that IEEE 754 arithmetic is intended to be supported; this does not mean that all relevant language features are supported by GCC. If 2 or more, it additionally indicates support for IEEE 754-2008 (in particular, that the binary encodings for quiet and signaling NaNs are as specified in IEEE 754-2008).
+
+    This macro does not indicate the default state of command-line options that control optimizations that C99 and C11 permit to be controlled by standard pragmas, where those standards do not require a particular default state. It does not indicate whether optimizations respect signaling NaN semantics (the macro for that is __SUPPORT_SNAN__). It does not indicate support for decimal floating point or the IEEE 754 binary16 and binary128 types.
+
+-->
+<snippet>
+    <content><![CDATA[
+__GCC_IEC_559
+]]></content>
+    <tabTrigger>__GCC_IEC_559</tabTrigger>
+    <scope>source.c, source.c++</scope>
+    <description>GNU MACRO</description>
+</snippet>

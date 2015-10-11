@@ -1,0 +1,13 @@
+<!-- 
+
+This macro is defined, with value 4, when -fstack-protector-explicit is in use.
+
+-->
+<snippet>
+    <content><![CDATA[
+__SSP_EXPLICIT__
+]]></content>
+    <tabTrigger>__SSP_EXPLICIT__</tabTrigger>
+    <scope>source.c, source.c++</scope>
+    <description>GNU MACRO</description>
+</snippet>

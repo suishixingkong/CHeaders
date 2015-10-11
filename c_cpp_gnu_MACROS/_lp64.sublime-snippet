@@ -1,0 +1,13 @@
+<!-- 
+
+These macros are defined, with value 1, if (and only if) the compilation is for a target where long int and pointer both use 64-bits and int uses 32-bit.
+
+-->
+<snippet>
+    <content><![CDATA[
+_LP64
+]]></content>
+    <tabTrigger>_LP64</tabTrigger>
+    <scope>source.c, source.c++</scope>
+    <description>GNU MACRO</description>
+</snippet>

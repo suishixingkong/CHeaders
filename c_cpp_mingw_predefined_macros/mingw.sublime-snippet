@@ -1,0 +1,12 @@
+<!-- 
+
+
+-->
+<snippet>
+	<content><![CDATA[
+__MINGW32__
+]]></content>
+	<tabTrigger>__MINGW32__</tabTrigger>
+	<scope>source.c, source.c++</scope>
+	<description>MINGW MACRO</description>
+</snippet>

@@ -1,0 +1,13 @@
+<!-- 
+
+GCC defines this macro if and only if the -ansi switch, or a -std switch specifying strict conformance to some version of ISO C or ISO C++, was specified when GCC was invoked. It is defined to ‘1’. This macro exists primarily to direct GNU libc's header files to restrict their definitions to the minimal set found in the 1989 C standard. 
+
+-->
+<snippet>
+	<content><![CDATA[
+__STRICT_ANSI__
+]]></content>
+	<tabTrigger>__STRICT_ANSI__</tabTrigger>
+	<scope>source.c, source.c++</scope>
+	<description>GNU MACRO</description>
+</snippet>

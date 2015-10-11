@@ -1,0 +1,13 @@
+<!-- 
+	
+Defined for compilations that target x64 processors.
+
+-->
+<snippet>
+	<content><![CDATA[
+_M_X64
+]]></content>
+	<tabTrigger>_M_X64</tabTrigger>
+	<scope>source.c, source.c++</scope>
+	<description>Microsoft MACRO</description>
+</snippet>

@@ -1,0 +1,13 @@
+<!-- 
+
+This macro is defined when compiling a C++ source file. It has the value 1 if the compiler will use weak symbols, COMDAT sections, or other similar techniques to collapse symbols with “vague linkage” that are defined in multiple translation units. If the compiler will not collapse such symbols, this macro is defined with value 0. In general, user code should not need to make use of this macro; the purpose of this macro is to ease implementation of the C++ runtime library provided with G++.
+
+-->
+<snippet>
+    <content><![CDATA[
+__GXX_WEAK__
+]]></content>
+    <tabTrigger>__GXX_WEAK__</tabTrigger>
+    <scope>source.c, source.c++</scope>
+    <description>GNU MACRO</description>
+</snippet>

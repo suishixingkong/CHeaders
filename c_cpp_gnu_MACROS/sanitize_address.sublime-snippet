@@ -1,0 +1,13 @@
+<!-- 
+
+This macro is defined, with value 1, when -fsanitize=address or -fsanitize=kernel-address are in use.
+
+-->
+<snippet>
+    <content><![CDATA[
+__SANITIZE_ADDRESS__
+]]></content>
+    <tabTrigger>__SANITIZE_ADDRESS__</tabTrigger>
+    <scope>source.c, source.c++</scope>
+    <description>GNU MACRO</description>
+</snippet>

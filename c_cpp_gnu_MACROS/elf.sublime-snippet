@@ -1,0 +1,13 @@
+<!-- 
+
+This macro is defined if the target uses the ELF object format. 
+
+-->
+<snippet>
+	<content><![CDATA[
+__ELF__
+]]></content>
+	<tabTrigger>__ELF__</tabTrigger>
+	<scope>source.c, source.c++</scope>
+	<description>GNU MACRO</description>
+</snippet>

@@ -1,0 +1,13 @@
+<!-- 
+
+Defined when /arch:AVX or /arch:AVX2 is specified.
+
+-->
+<snippet>
+	<content><![CDATA[
+__AVX__
+]]></content>
+	<tabTrigger>__AVX__</tabTrigger>
+	<scope>source.c, source.c++</scope>
+	<description>Microsoft MACRO</description>
+</snippet>

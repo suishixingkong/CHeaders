@@ -1,0 +1,13 @@
+<!-- 
+
+This macro is defined, with value 1, when compiling a C++ source file with runtime type identification enabled. If -fno-rtti is used when compiling the file, then this macro is not  defined.
+
+-->
+<snippet>
+    <content><![CDATA[
+__GXX_RTTI
+]]></content>
+    <tabTrigger>__GXX_RTTI</tabTrigger>
+    <scope>source.c, source.c++</scope>
+    <description>GNU MACRO</description>
+</snippet>

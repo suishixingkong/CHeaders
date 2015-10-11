@@ -1,0 +1,22 @@
+<!-- 
+	
+Defined when compiling with /openmp, evaluates to an integer literal representing the date of the OpenMP specification implemented by Visual C++.
+
+// _OPENMP_dir.cpp
+// compile with: /openmp 
+#include <stdio.h> 
+int main() {
+   printf("%d\n", _OPENMP);
+}
+
+
+
+-->
+<snippet>
+	<content><![CDATA[
+_OPENMP
+]]></content>
+	<tabTrigger>_OPENMP</tabTrigger>
+	<scope>source.c, source.c++</scope>
+	<description>Microsoft MACRO</description>
+</snippet>

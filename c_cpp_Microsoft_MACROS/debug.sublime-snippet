@@ -1,0 +1,13 @@
+<!-- 
+
+Defined when you compile with /LDd, /MDd, and /MTd.
+
+-->
+<snippet>
+	<content><![CDATA[
+_DEBUG
+]]></content>
+	<tabTrigger>_DEBUG</tabTrigger>
+	<scope>source.c, source.c++</scope>
+	<description>Microsoft MACRO</description>
+</snippet>

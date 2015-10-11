@@ -1,0 +1,13 @@
+<!-- 
+	
+Defined for a compilation that uses /clr:safe.
+
+-->
+<snippet>
+	<content><![CDATA[
+_M_CEE_SAFE
+]]></content>
+	<tabTrigger>_M_CEE_SAFE</tabTrigger>
+	<scope>source.c, source.c++</scope>
+	<description>Microsoft MACRO</description>
+</snippet>

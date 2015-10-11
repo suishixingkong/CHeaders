@@ -1,0 +1,13 @@
+<!-- 
+
+This macro is defined, with value 1, when compiling a C++ source file with exceptions enabled. If -fno-exceptions is used when compiling the file, then this macro is not defined.
+
+-->
+<snippet>
+    <content><![CDATA[
+__EXCEPTIONS
+]]></content>
+    <tabTrigger>__EXCEPTIONS</tabTrigger>
+    <scope>source.c, source.c++</scope>
+    <description>GNU MACRO</description>
+</snippet>

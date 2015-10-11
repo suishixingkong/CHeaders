@@ -1,0 +1,12 @@
+<!-- 
+
+
+-->
+<snippet>
+	<content><![CDATA[
+__llvm__
+]]></content>
+	<tabTrigger>__llvm__</tabTrigger>
+	<scope>source.c, source.c++</scope>
+	<description>MINGW MACRO</description>
+</snippet>

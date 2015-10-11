@@ -1,0 +1,13 @@
+<!-- 
+
+Default char type is unsigned. Defined when /J is specified. 
+
+-->
+<snippet>
+	<content><![CDATA[
+_CHAR_UNSIGNED
+]]></content>
+	<tabTrigger>_CHAR_UNSIGNED</tabTrigger>
+	<scope>source.c, source.c++</scope>
+	<description>Microsoft MACRO</description>
+</snippet>

@@ -1,0 +1,13 @@
+<!-- 
+
+Defined when /Zc:wchar_t is used or if wchar_t is defined in a system header file included in your project.
+
+-->
+<snippet>
+	<content><![CDATA[
+_WCHAR_T_DEFINED
+]]></content>
+	<tabTrigger>_WCHAR_T_DEFINED</tabTrigger>
+	<scope>source.c, source.c++</scope>
+	<description>Microsoft MACRO</description>
+</snippet>

@@ -1,0 +1,13 @@
+<!-- 
+
+This macro is defined, with value 1, if the compiler's target is a hosted environment. A hosted environment has the complete facilities of the standard C library available. 
+
+-->
+<snippet>
+	<content><![CDATA[
+__STDC_HOSTED__
+]]></content>
+	<tabTrigger>__STDC_HOSTED__</tabTrigger>
+	<scope>source.c, source.c++</scope>
+	<description>MACRO</description>
+</snippet>

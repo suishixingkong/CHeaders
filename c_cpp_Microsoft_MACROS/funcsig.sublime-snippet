@@ -1,0 +1,19 @@
+<!-- 
+
+Valid only in a function. Defines the signature of the enclosing function as a string literal.
+
+__FUNCSIG__ is not expanded if you use the /EP or /P compiler option.
+
+On a 64-bit operating system, the calling convention is __cdecl by default.
+
+See __FUNCDNAME__ for an example.
+
+-->
+<snippet>
+	<content><![CDATA[
+__FUNCSIG__
+]]></content>
+	<tabTrigger>__FUNCSIG__</tabTrigger>
+	<scope>source.c, source.c++</scope>
+	<description>Microsoft MACRO</description>
+</snippet>

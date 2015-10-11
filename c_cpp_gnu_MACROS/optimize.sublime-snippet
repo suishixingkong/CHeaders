@@ -1,0 +1,15 @@
+<!-- 
+
+These macros describe the compilation mode. __OPTIMIZE__ is defined in all optimizing compilations. __OPTIMIZE_SIZE__ is defined if the compiler is optimizing for size, not speed. __NO_INLINE__ is defined if no functions will be inlined into their callers (when not optimizing, or when inlining has been specifically disabled by -fno-inline).
+
+These macros cause certain GNU header files to provide optimized definitions, using macros or inline functions, of system library functions. You should not use these macros in any way unless you make sure that programs will execute with the same effect whether or not they are defined. If they are defined, their value is 1. 
+
+-->
+<snippet>
+	<content><![CDATA[
+__OPTIMIZE__
+]]></content>
+	<tabTrigger>__OPTIMIZE__</tabTrigger>
+	<scope>source.c, source.c++</scope>
+	<description>GNU MACRO</description>
+</snippet>

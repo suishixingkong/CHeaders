@@ -1,0 +1,13 @@
+<!-- 
+
+This macro is defined when the compiler is emitting Dwarf2 CFI directives to the assembler. When this is defined, it is possible to emit those same directives in inline assembly.
+
+-->
+<snippet>
+    <content><![CDATA[
+__GCC_HAVE_DWARF2_CFI_ASM
+]]></content>
+    <tabTrigger>__GCC_HAVE_DWARF2_CFI_ASM</tabTrigger>
+    <scope>source.c, source.c++</scope>
+    <description>GNU MACRO</description>
+</snippet>
