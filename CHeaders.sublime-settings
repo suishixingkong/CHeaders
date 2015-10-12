@@ -7,5 +7,5 @@
     // example window: 
     // 		C:\
     // 		%HOME% <= Same => C:\
-    "PATHS_HEADERS" : [],
+    "PATHS_HEADERS" : []
 }

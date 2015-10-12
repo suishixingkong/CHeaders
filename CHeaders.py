@@ -63,6 +63,8 @@ http://sourceforge.net/projects/mingw/files/"""
         # include wrappers
         self._include_wrapper_files = "#include <%s>"
         self._include_wrapper_dirs = "#include <%s/"
+        self._include_wrapper_files2 = "#include \"%s\""
+        self._include_wrapper_dirs2 = "#include \"%s/"
 
         if self.is_linux:
 
@@ -172,18 +174,27 @@ http://sourceforge.net/projects/mingw/files/"""
             sublime.Region(0, 1)
         )
 
-    def _parse_result(self, substr, header, type):
+    def _parse_result(self, substr, header, type, mode):
         _caption = header + '\t' + type
         if type == "directory":
             if "#include" not in substr:
-                _r = self._include_wrapper_dirs % header
-            else:
+                if mode == "nonlocal":
+                    _r = self._include_wrapper_dirs % header
+                if mode == "local":
+                    _r = self._include_wrapper_dirs2 % header
+            if "#include <" in substr or "#include \"" in substr:
                 _r = header + "/"
+
         if type == "module":
             if "#include" not in substr:
-                _r = self._include_wrapper_files % header
-            else:
+                if mode == "nonlocal":
+                    _r = self._include_wrapper_files % header
+                if mode == "local":
+                    _r = self._include_wrapper_files2 % header
+            if "#include <" in substr:
                 _r = header + ">"
+            if "#include \"" in substr:
+                _r = header + "\""
 
         return _caption, _r
 
@@ -240,7 +251,8 @@ http://sourceforge.net/projects/mingw/files/"""
                         _r = self._parse_result(
                             substr,
                             _p,
-                            self._cpp_windows_h[_p]
+                            self._cpp_windows_h[_p],
+                            "nonlocal"
                         )
                         result.append(_r)
 
@@ -253,7 +265,8 @@ http://sourceforge.net/projects/mingw/files/"""
                             _r = self._parse_result(
                                 substr,
                                 _p,
-                                self._cpp_gnu_h[_p])
+                                self._cpp_gnu_h[_p],
+                                "nonlocal")
 
                             result.append(_r)
 
@@ -262,7 +275,8 @@ http://sourceforge.net/projects/mingw/files/"""
                         _r = self._parse_result(
                             substr,
                             _p,
-                            self._linux_gnu_h[_p])
+                            self._linux_gnu_h[_p],
+                            "nonlocal")
 
                         result.append(_r)
 
@@ -275,7 +289,8 @@ http://sourceforge.net/projects/mingw/files/"""
                                 _r = self._parse_result(
                                     substr,
                                     item.replace(path, ""),
-                                    "directory"
+                                    "directory",
+                                    "nonlocal"
                                 )
                                 result.append(_r)
                             elif os.path.isfile(item):
@@ -284,7 +299,8 @@ http://sourceforge.net/projects/mingw/files/"""
                                     _r = self._parse_result(
                                         substr,
                                         item.replace(path, ""),
-                                        "module"
+                                        "module",
+                                        "nonlocal"
                                     )
                                     result.append(_r)
 
