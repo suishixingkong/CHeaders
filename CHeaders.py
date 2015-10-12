@@ -13,6 +13,7 @@ settings = {}
 def plugin_loaded():
     global settings
     settings = sublime.load_settings(SETTINGS_FILE)
+    print("plugin loaded...")
 
 
 class LoadPluginCommand(sublime_plugin.WindowCommand):
@@ -171,10 +172,6 @@ http://sourceforge.net/projects/mingw/files/"""
             sublime.Region(0, 1)
         )
 
-    @staticmethod
-    def _looking_project_headers():
-        pass
-
     def _parse_result(self, substr, header, type):
         _caption = header + '\t' + type
         if type == "directory":
@@ -191,7 +188,7 @@ http://sourceforge.net/projects/mingw/files/"""
         return _caption, _r
 
     def on_query_completions(self, view, prefix, location):
-        regex_c_cpp_files = r"(\.(c|cp{2}|c{2}|c\+{2}|cx{2}|C|CP{2}|cp))$"
+        regex_c_cpp_files = r"(\.(c|cpp|cc|c\+\+|cxx|C|CPP|cp|h|hpp|hh|hxx))$"
         result = []
         file_name = view.name() or view.file_name()
         substr = ""
