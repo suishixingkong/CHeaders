@@ -198,7 +198,6 @@ http://sourceforge.net/projects/mingw/files/"""
             substr = self._find_substring(view, location[0])
             rx = re.search(r"(\w+(-*\.*\w+/*|/\w+)*(?=/))", substr)
 
-            print(substr)
             if rx:
                 self._paths = []
                 start = rx.start()
