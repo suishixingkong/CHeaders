@@ -48,6 +48,8 @@ IS_C_FILE_OTHERS = re.compile(r'(.*\.(%s))$' % (
     re.escape('ipp'),
 ))
 
+GET_CH_DIR = re.compile(r"(\w+(-*\.*\w+/*|/\w+)*(?=/))")
+
 # architecture
 ARCH = sublime.arch()
 
@@ -448,22 +450,38 @@ http://sourceforge.net/projects/mingw/files/"""
         # this list will contain a copy of self._settings_paths
         self._paths = copy.deepcopy(self._settings_paths)
 
+    def clean(self):
+        # clean self._paths.
+        self._paths = []
+
     def file_name(self):
+        # Will return the actual buffer name
         return sublime.active_window().active_view().name() or\
             sublime.active_window().active_view().file_name()
 
     def is_c_file(self, file):
+        # will test, if the file, it's a c or c header file
+        # else, return false.
+        #
+        # :file file to test.
         return IS_C_FILE.search(file) or IS_CH_FILE.search(file) or \
                 IS_C_FILE_OTHERS.search(file)
 
-    @property
-    def _is_main_path(self):
-        for _sp in self._settings_paths:
-            if _sp in self._paths:
-                return True
-        return
 
     def _parse_settings(self, settings):
+        # will parse, settings user input
+        # sample linux:
+        #
+        #   /home/leoxnidas/include/ -> normal
+        #   ~/include/ -> /home/user/include/
+        #   $HOME/include/ -> /home/usr/include
+        #
+        # sample windows:
+        #   C:\ -> normal
+        #   %HOME%\example -> C:\example
+        #
+        # :settings json settings.
+        #
         _settings = []
         for _setting in settings:
             if _setting.startswith("~"):
@@ -475,13 +493,20 @@ http://sourceforge.net/projects/mingw/files/"""
             _settings.append(_setting)
         return _settings
 
-    def update(self, file):
-        if os.path.isdir(file):
-            caption = file.rsplit(os.sep, 1)[1]
+
+    def update(self, item):
+        # return a dictionary, specifying 
+        # if the current item, it is a directory  
+        # or it is a module.
+        #
+        # :item item to test.
+        if os.path.isdir(item):
+            caption = item.rsplit(os.sep, 1)[1]
             return {caption: "directory"}
-        if os.path.isfile(file):
-            caption = file.rsplit(os.sep, 1)[1]
+        if os.path.isfile(item):
+            caption = item.rsplit(os.sep, 1)[1]
             return {caption: "module"}
+
 
     def current_line(self, view, location):
         # will return the current line, where the programmer
@@ -505,6 +530,14 @@ http://sourceforge.net/projects/mingw/files/"""
             return ''
 
     def _parse_result(self, substr, header, type, mode):
+        # Return a tuple, specifying if the header object
+        # is a module or a directory, if it needs include macro
+        # or not, if it is local or no.
+        #
+        # :substr where the user, it is writting
+        # :header current header, example: stdio.h
+        # :type the header type, if it is a directory or a module
+        # :mode the header mode, if it is a local header or not.
         _caption = header + '\t' + type
         if type == "directory":
             if "#include" not in substr:
@@ -535,10 +568,19 @@ http://sourceforge.net/projects/mingw/files/"""
         if self.is_c_file(self.file_name()):
 
             substr = self.current_line(view, location[0])
-            rx = re.search(r"(\w+(-*\.*\w+/*|/\w+)*(?=/))", substr)
+            rx = GET_CH_DIR.search(substr)
 
             if rx:
-                self._paths = []
+                # add current path, to self._paths,
+                # to autocomplete, c headers or others 
+                # directories.
+                # 
+                # sample:
+                #
+                # #include <linux/ <-- current posible path
+                #                         /usr/include/linux
+                #                         /usr/local/include/linux
+                self.clean()
                 start = rx.start()
                 end = rx.end()
 
@@ -548,21 +590,24 @@ http://sourceforge.net/projects/mingw/files/"""
                         self._paths.append(_f)
 
             else:
-                self._paths = []
+                # clean self._paths, and add 
+                # defaults paths, again.
+                self.clean()
+
                 for _p in self._settings_paths:
                     self._paths.append(_p)
 
-                if not re.search(r".*\.c$", self.file_name()):
-                    for _p in self._cpp_h:
-                        _r = self._parse_result(
-                            substr,
-                            _p,
-                            self._cpp_h[_p],
-                            "nonlocal")
+                # add cpp paths too.
+                for _p in self._cpp_h:
+                    _r = self._parse_result(
+                        substr,
+                        _p,
+                        self._cpp_h[_p],
+                        "nonlocal")
 
-                        result.append(_r)
+                    result.append(_r)
 
-
+            # it will search every file, according to the prefix.
             for path in self._paths:
                 _glob_result = glob.glob(path + prefix + "*")
                 if _glob_result:
