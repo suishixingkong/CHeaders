@@ -25,6 +25,10 @@ MINGW32_INCLUDE_FIXED = 'C:\\MinGW\\mingw32\\lib\\gcc\\mingw32\\4.8.1\\include\\
 MINGW32_INCLUDE_FIXED2 = 'C:\\MinGW\\mingw32\\lib\\gcc\\mingw32\\4.8.1\\include-fixed\\'
 MINGW_CPP_INCLUDE = 'C:\\MinGW\\mingw32\\lib\\gcc\\mingw32\\4.8.1\\include\\c++\\'
 
+CYWING_INCLUDE = 'C:\\cygwin\\usr\\include\\'
+CYWING_INCLUDE_CPP_32BITS = 'C:\\cygwin\\lib\\gcc\\i686-pc-cygwin\\5.3.0\\include\\c++\\'
+CYWING_INCLUDE_CPP_64BITS = 'C:\\cygwin\\lib\\gcc\\x86_64-pc-cygwin\\5.3.0\\include\\c++\\'
+
 IS_C_FILE = re.compile(r'(.*\.(%s|%s|%s|%s|%s|%s|%s|%s))$' % (
     re.escape('c'),
     re.escape('cpp'),
@@ -372,8 +376,17 @@ if IS_LINUX:
     ]
 
 elif IS_WINDOW:
-    CPP_PATHS = [MINGW_CPP_INCLUDE]
+    CPP_PATHS = []
+    if os.path.exists(MINGW_INCLUDE):
+        CPP_PATHS = [MINGW_CPP_INCLUDE]
+    else:
+        if ARCH == 'x32':
+            CPP_PATHS.append(CYWING_INCLUDE_CPP_32BITS)
+        else:
+            CPP_PATHS.append(CYWING_INCLUDE_CPP_64BITS)
+
     CPP_SUPPORTED_VERSIONS = ['']
+
 
 # all cpp paths, on the SO(linux, windows, etc).
 CPP_ABSOLUTE_PATH = [
@@ -420,18 +433,29 @@ class CompleteCHeadersCommand(sublime_plugin.EventListener):
                 self._settings_paths.append(GNU_INCLUDE_64BITS)
 
         if IS_WINDOW:
+            print(CPP_ABSOLUTE_PATH)
+            error_msg = ""
 
             # cpp windows supported version 4.8.1
-            if not os.path.exists("C:\\Mingw"):
-                error_msg = """You should download Mingw, this is the webpage:
-http://sourceforge.net/projects/mingw/files/"""
-                sublime.error_message(error_msg)
-            else:
+            if os.path.exists("C:\\cygwin"):
+                self._settings_paths.append(CYWING_INCLUDE)
+
+                if ARCH == 'x32':
+                    self._settings_paths.append(CYWING_INCLUDE_CPP_32BITS)
+                else:
+                    self._settings_paths.append(CYWING_INCLUDE_CPP_64BITS)
+
+            elif os.path.exists("C:\\Mingw"):
                 self._settings_paths.append(MINGW_INCLUDE)
                 self._settings_paths.append(MINGW32_INCLUDE)
                 self._settings_paths.append(MINGW32_SYS)
                 self._settings_paths.append(MINGW32_INCLUDE_FIXED)
                 self._settings_paths.append(MINGW32_INCLUDE_FIXED2)
+
+            else:
+                error_msg = """*  You should download Mingw, this is the webpage:
+http://sourceforge.net/projects/mingw/files/ or cywing at http://cygwin.com/install.html"""
+                sublime.error_msg(error_msg)
 
         # include wrappers
         self._include_wrapper_files = "#include <%s>"
@@ -570,6 +594,9 @@ http://sourceforge.net/projects/mingw/files/"""
             substr = self.current_line(view, location[0])
             rx = GET_CH_DIR.search(substr)
 
+            # clean self._paths.
+            self.clean()
+            
             if rx:
                 # add current path, to self._paths,
                 # to autocomplete, c headers or others 
@@ -580,7 +607,6 @@ http://sourceforge.net/projects/mingw/files/"""
                 # #include <linux/ <-- current posible path
                 #                         /usr/include/linux
                 #                         /usr/local/include/linux
-                self.clean()
                 start = rx.start()
                 end = rx.end()
 
@@ -590,10 +616,6 @@ http://sourceforge.net/projects/mingw/files/"""
                         self._paths.append(_f)
 
             else:
-                # clean self._paths, and add 
-                # defaults paths, again.
-                self.clean()
-
                 for _p in self._settings_paths:
                     self._paths.append(_p)
 
