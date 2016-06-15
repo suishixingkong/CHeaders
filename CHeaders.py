@@ -411,15 +411,10 @@ elif IS_WINDOW:
 CPP_ABSOLUTE_PATH = _CPP_ABSOLUTE_PATH
 
 
-def plugin_loaded():
-    global settings
-    settings = sublime.load_settings(SETTINGS_FILE)
-    print("plugin loaded...")
-
-
 class LoadPluginCommand(sublime_plugin.WindowCommand):
 
     def run(self, **kwargs):
+        # load the CHeaders plugin.
         sublime.status_message(kwargs.get("message"))
         sublime_plugin.reload_plugin(__name__)
 
@@ -428,14 +423,20 @@ class CompleteCHeadersCommand(sublime_plugin.EventListener):
 
     def __init__(self):
         sublime_plugin.EventListener.__init__(self)
+        global settings
+
+        # include wrappers
+        self._include_global_files = "#include <%s>"
+        self._include_global_dirs = "#include <%s/"
+        self._include_local_files = "#include \"%s\""
+        self._include_local_dirs = "#include \"%s/"
 
         # loading settings
+        settings = sublime.load_settings(SETTINGS_FILE)
         self._cache_paths = settings.get("PATHS_HEADERS", [])
-        if not self._cache_paths:
-            _settings = sublime.active_window().active_view().settings()
-            self._cache_paths = _settings.get("PATHS_HEADERS", [])
 
-        self._cache_paths = self._parse_settings(self._cache_paths)
+        if self._cache_paths:
+            self._cache_paths = self._parse_settings(self._cache_paths)
 
         if IS_LINUX:
             self._cache_paths.append(GNU_INCLUDE)
@@ -467,12 +468,6 @@ class CompleteCHeadersCommand(sublime_plugin.EventListener):
                 error_msg = """*  You should download Mingw, this is the webpage:
 http://sourceforge.net/projects/mingw/files/ or cywing at http://cygwin.com/install.html"""
                 sublime.error_msg(error_msg)
-
-        # include wrappers
-        self._include_wrapper_files = "#include <%s>"
-        self._include_wrapper_dirs = "#include <%s/"
-        self._include_wrapper_files2 = "#include \"%s\""
-        self._include_wrapper_dirs2 = "#include \"%s/"
 
         # adding cpp std headers
         self._cpp_h = {}
@@ -563,18 +558,18 @@ http://sourceforge.net/projects/mingw/files/ or cywing at http://cygwin.com/inst
         if type == "directory":
             if "#include" not in substr:
                 if mode == "nonlocal":
-                    _r = self._include_wrapper_dirs % header
+                    _r = self._include_global_dirs % header
                 if mode == "local":
-                    _r = self._include_wrapper_dirs2 % header
+                    _r = self._include_local_dirs % header
             if "#include <" in substr or "#include \"" in substr:
                 _r = header + "/"
 
         if type == "module":
             if "#include" not in substr:
                 if mode == "nonlocal":
-                    _r = self._include_wrapper_files % header
+                    _r = self._include_global_files % header
                 if mode == "local":
-                    _r = self._include_wrapper_files2 % header
+                    _r = self._include_local_files % header
             if "#include <" in substr:
                 _r = header + ">"
             if "#include \"" in substr:
@@ -623,7 +618,8 @@ http://sourceforge.net/projects/mingw/files/ or cywing at http://cygwin.com/inst
                 _glob_result = glob.glob(path + prefix + "*")
                 if _glob_result:
                     for item in _glob_result:
-                        if item.replace(path, "").startswith(prefix):
+                        if item.replace(path, "").startswith(prefix) and \
+                            not IS_C_FILE.match(item):
                             if os.path.isdir(item):
                                 _r = self._parse_result(
                                     substr,
@@ -643,3 +639,4 @@ http://sourceforge.net/projects/mingw/files/ or cywing at http://cygwin.com/inst
                             if _r not in result:
                                 result.append(_r)
         return result
+
