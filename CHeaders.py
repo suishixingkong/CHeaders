@@ -10,6 +10,7 @@ import sublime_plugin
 SETTINGS_FILE = 'CHeaders.sublime-settings'
 settings = {}
 
+
 GNU_INCLUDE = '/usr/include/'
 GNU_LOCAL_INCLUDE = '/usr/local/include/'
 GNU_INCLUDE_32BITS = '/usr/include/i386-linux-gnu/'
@@ -68,6 +69,7 @@ ARCH = sublime.arch()
 # distribution
 IS_LINUX = sublime.platform() == "linux"
 IS_WINDOW = sublime.platform() == "windows"
+
 
 # gnu cpp versions
 CPP_SUPPORTED_VERSIONS = [
