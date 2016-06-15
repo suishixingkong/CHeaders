@@ -1,0 +1,13 @@
+<!-- 
+
+-->
+<snippet>
+	<content><![CDATA[
+#ifdef DEBUG
+$1
+#endif
+]]></content>
+	<tabTrigger>DEBUG</tabTrigger>
+	<scope>source.c, source.c++</scope>
+	<description>GNU MACRO</description>
+</snippet>

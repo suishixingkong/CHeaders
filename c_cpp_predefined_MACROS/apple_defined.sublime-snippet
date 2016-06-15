@@ -1,0 +1,13 @@
+<!-- 
+
+-->
+<snippet>
+	<content><![CDATA[
+#if defined(__APPLE__)
+$1
+#endif
+]]></content>
+	<tabTrigger>if_apple_defined</tabTrigger>
+	<scope>source.c, source.c++</scope>
+	<description>GNU MACRO</description>
+</snippet>

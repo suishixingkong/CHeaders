@@ -1,0 +1,13 @@
+<!-- 
+
+-->
+<snippet>
+	<content><![CDATA[
+#if defined($1)
+// Your code
+#endif
+]]></content>
+	<tabTrigger>defined</tabTrigger>
+	<scope>source.c, source.c++</scope>
+	<description>GNU MACRO</description>
+</snippet>

@@ -1,0 +1,13 @@
+<!-- 
+
+-->
+<snippet>
+	<content><![CDATA[
+#if defined(__MINGW64__)
+$1
+#endif
+]]></content>
+	<tabTrigger>if_mingw64_defined</tabTrigger>
+	<scope>source.c, source.c++</scope>
+	<description>GNU MACRO</description>
+</snippet>
