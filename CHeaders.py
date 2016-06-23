@@ -7,9 +7,13 @@ import sublime
 import sublime_plugin
 
 
+_obj_exists = lambda obj: os.path.exists(obj)
+_join = lambda x, y: os.path.join(x, y)
+_is_dir = lambda obj: os.path.isdir(obj)
+_is_file = lambda obj: os.path.isfile(obj)
+
 SETTINGS_FILE = 'CHeaders.sublime-settings'
 settings = {}
-
 
 GNU_INCLUDE = '/usr/include/'
 GNU_LOCAL_INCLUDE = '/usr/local/include/'
@@ -24,7 +28,7 @@ GNU_INCLUDE_CPP_64BITS = '/usr/include/x86_64-linux-gnu/c++/'
 # MINGW32_INCLUDE_FIXED2
 def _win_include_fixed(path, versions):
     for version in versions:
-        if os.path.exists(path % version):
+        if _obj_exists(path % version):
             return path % version
 
 MINGW_INCLUDE = 'C:\\Mingw\\include\\'
@@ -57,8 +61,9 @@ IS_CH_FILE = re.compile(r'(.*\.(%s|%s|%s|%s|%s))$' % (
     re.escape('H')
 ))
 
-IS_C_FILE_OTHERS = re.compile(r'(.*\.(%s))$' % (
+IS_C_FILE_OTHERS = re.compile(r'(.*\.(%s|%s))$' % (
     re.escape('ipp'),
+    re.escape('mm'),
 ))
 
 GET_CH_DIR = re.compile(r"(\w+(-*\.*\w+/*|/\w+)*(?=/))")
@@ -386,15 +391,15 @@ if IS_LINUX:
         CPP_PATHS.append(GNU_INCLUDE_CPP_64BITS)
 
     _CPP_ABSOLUTE_PATH = [
-        os.path.join(CPP_PATH, version) 
+        _join(CPP_PATH, version) 
         for version in CPP_SUPPORTED_VERSIONS
         for CPP_PATH in CPP_PATHS
-        if os.path.exists(os.path.join(CPP_PATH, version))
+        if _obj_exists(_join(CPP_PATH, version))
     ][len(CPP_PATHS):]
 
 elif IS_WINDOW:
     CPP_PATHS = []
-    if os.path.exists(MINGW_INCLUDE):
+    if _obj_exists(MINGW_INCLUDE):
         CPP_PATHS = [MINGW_CPP_INCLUDE]
     else:
         if ARCH == 'x32':
@@ -406,7 +411,7 @@ elif IS_WINDOW:
         (CPP_PATH % VERSION)
         for VERSION in CPP_SUPPORTED_VERSIONS
         for CPP_PATH in CPP_PATHS
-        if os.path.exists((CPP_PATH % VERSION))
+        if _obj_exists((CPP_PATH % VERSION))
     ]
 
 # all cpp paths, on the SO(linux, windows, etc).
@@ -427,18 +432,19 @@ class CompleteCHeadersCommand(sublime_plugin.EventListener):
         sublime_plugin.EventListener.__init__(self)
         global settings
 
+
         # include wrappers
         self._include_global_files = "#include <%s>"
         self._include_global_dirs = "#include <%s/"
-        self._include_local_files = "#include \"%s\""
-        self._include_local_dirs = "#include \"%s/"
+        # self._include_local_files = "#include \"%s\""
+        # self._include_local_dirs = "#include \"%s/"
 
         # loading settings
         settings = sublime.load_settings(SETTINGS_FILE)
         self._cache_paths = settings.get("PATHS_HEADERS", [])
 
         if self._cache_paths:
-            self._cache_paths = self._parse_settings(self._cache_paths)
+            self._cache_paths = self.parse_settings(self._cache_paths)
 
         if IS_LINUX:
             self._cache_paths.append(GNU_INCLUDE)
@@ -454,10 +460,10 @@ class CompleteCHeadersCommand(sublime_plugin.EventListener):
 
             # cpp windows supported version 4.8.1
             # cywing and mingw
-            if os.path.exists("C:\\cygwin"):
+            if _obj_exists("C:\\cygwin"):
                 self._cache_paths.append(CYWING_INCLUDE)
 
-            elif os.path.exists("C:\\Mingw"):
+            elif _obj_exists("C:\\Mingw"):
                 self._cache_paths.append(MINGW_INCLUDE)
                 self._cache_paths.append(MINGW32_INCLUDE)
                 self._cache_paths.append(MINGW32_SYS)
@@ -478,9 +484,9 @@ http://sourceforge.net/projects/mingw/files/ or cywing at http://cygwin.com/inst
 
 
         # this list will contain a copy of self._cache_paths
-        self._paths = self.dup_paths()
+        self._paths = self.copy_cache()
 
-    def dup_paths(self):
+    def copy_cache(self):
         # deep copy of settings paths
         return copy.deepcopy(self._cache_paths)
 
@@ -501,7 +507,15 @@ http://sourceforge.net/projects/mingw/files/ or cywing at http://cygwin.com/inst
         return IS_C_FILE.search(file) or IS_CH_FILE.search(file) or \
                 IS_C_FILE_OTHERS.search(file)
 
-    def _parse_settings(self, settings):
+    def is_cpp_file(self, filename):
+        if _is_file(filename):
+            file_content = ''
+            with open(filename, 'r') as cpp_file:
+                file_content = cpp_file.read()
+            return re.search(r'#(include|define|pragma|ifndef|if).*', file_content)
+        return None
+
+    def parse_settings(self, settings):
         # will parse, settings user input
         # sample linux:
         #
@@ -547,7 +561,7 @@ http://sourceforge.net/projects/mingw/files/ or cywing at http://cygwin.com/inst
         else:
             return ''
 
-    def _parse_result(self, substr, header, type, mode):
+    def parse_result(self, substr, header, type):
         # Return a tuple, specifying if the header object
         # is a module or a directory, if it needs include macro
         # or not, if it is local or no.
@@ -555,23 +569,16 @@ http://sourceforge.net/projects/mingw/files/ or cywing at http://cygwin.com/inst
         # :substr where the user, it is writting
         # :header current header, example: stdio.h
         # :type the header type, if it is a directory or a module
-        # :mode the header mode, if it is a local header or not.
         _caption = header + '\t' + type
         if type == "directory":
             if "#include" not in substr:
-                if mode == "nonlocal":
-                    _r = self._include_global_dirs % header
-                if mode == "local":
-                    _r = self._include_local_dirs % header
+                _r = self._include_global_dirs % header
             if "#include <" in substr or "#include \"" in substr:
                 _r = header + "/"
 
         if type == "module":
             if "#include" not in substr:
-                if mode == "nonlocal":
-                    _r = self._include_global_files % header
-                if mode == "local":
-                    _r = self._include_local_files % header
+                _r = self._include_global_files % header
             if "#include <" in substr:
                 _r = header + ">"
             if "#include \"" in substr:
@@ -607,12 +614,12 @@ http://sourceforge.net/projects/mingw/files/ or cywing at http://cygwin.com/inst
 
                 for _path in self._cache_paths:
                     _abs_path = _path + substr[start:end] + os.sep
-                    if os.path.exists(_abs_path):
+                    if _obj_exists(_abs_path):
                         self._paths.append(_abs_path)
 
             else:
                 # add all paths again to self._paths
-                self._paths = self.dup_paths()
+                self._paths = self.copy_cache()
 
 
             # it will search every file, according to the prefix.
@@ -620,21 +627,23 @@ http://sourceforge.net/projects/mingw/files/ or cywing at http://cygwin.com/inst
                 _glob_result = glob.glob(path + prefix + "*")
                 if _glob_result:
                     for item in _glob_result:
+                        
                         if item.replace(path, "").startswith(prefix) and \
-                            not IS_C_FILE.match(item):
-                            if os.path.isdir(item):
-                                _r = self._parse_result(
+                            not IS_C_FILE.match(item) and \
+                            (self.is_cpp_file(item) or _is_dir(item)) and \
+                            not IS_C_FILE_OTHERS.match(item):
+
+                            if _is_dir(item):
+                                _r = self.parse_result(
                                     substr,
                                     item.replace(path, ""),
                                     "directory",
-                                    "nonlocal"
                                 )
-                            elif os.path.isfile(item):
-                                _r = self._parse_result(
+                            elif _is_file(item):
+                                _r = self.parse_result(
                                     substr,
                                     item.replace(path, ""),
                                     "module",
-                                    "nonlocal"
                                 )
 
                             # to eliminate repeteable values
