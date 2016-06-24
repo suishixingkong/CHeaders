@@ -395,7 +395,12 @@ if IS_LINUX:
         for version in CPP_SUPPORTED_VERSIONS
         for CPP_PATH in CPP_PATHS
         if _obj_exists(_join(CPP_PATH, version))
-    ][len(CPP_PATHS):]
+    ]
+
+    # this code shall be executed, when linux user has two
+    # cpp versions, and the lastest will be choseen
+    if len(_CPP_ABSOLUTE_PATH) >= 3:
+        _CPP_ABSOLUTE_PATH = _CPP_ABSOLUTE_PATH[len(CPP_PATHS):]
 
 elif IS_WINDOW:
     CPP_PATHS = []
@@ -624,7 +629,7 @@ http://sourceforge.net/projects/mingw/files/ or cywing at http://cygwin.com/inst
                 # add all paths again to self._paths
                 self._paths = self.copy_cache()
 
-
+            print(self._paths)
             # it will search every file, according to the prefix.
             for path in self._paths:
                 _glob_result = glob.glob(path + prefix + "*")
