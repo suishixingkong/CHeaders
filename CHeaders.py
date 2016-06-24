@@ -480,7 +480,10 @@ http://sourceforge.net/projects/mingw/files/ or cywing at http://cygwin.com/inst
         # adding cpp std headers
         self._cpp_h = {}
         for path in CPP_ABSOLUTE_PATH:
-            self._cache_paths.append(path + os.sep)
+            if path.endswith(os.sep):
+                self._cache_paths.append(path)
+            else:
+                self._cache_paths.append(path + os.sep)
 
 
         # this list will contain a copy of self._cache_paths
