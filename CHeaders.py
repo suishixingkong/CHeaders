@@ -733,6 +733,8 @@ http://sourceforge.net/projects/mingw/files/ or cywing at http://cygwin.com/inst
                 IS_C_FILE_OTHERS.search(file)
 
     def is_cpp_file(self, filename):
+        # Will test, if the file, without any extention,
+        # is a c++, file.
         if _is_file(filename):
             file_content = ''
             with open(filename, 'r') as cpp_file:
