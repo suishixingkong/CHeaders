@@ -777,8 +777,9 @@ http://sourceforge.net/projects/mingw/files/ or cywing at http://cygwin.com/inst
         if '#' in substr:
             sharp_index = substr.rindex('#')
 
-            if '>' in substr:
-                great_index = substr.rindex('>')
+            if '>' in substr or '"' in substr:
+                s = '>' if '>' in substr else '"'
+                great_index = substr.rindex(s)
                 if sharp_index > great_index:
                     return substr[sharp_index:]
                 else:
@@ -787,6 +788,9 @@ http://sourceforge.net/projects/mingw/files/ or cywing at http://cygwin.com/inst
                 return substr[sharp_index:]
         else:
             return ''
+
+    def in_func_or_macro_scope(self):
+        return True
 
     def parse_result(self, substr, header, type):
         # Return a tuple, specifying if the header object
