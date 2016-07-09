@@ -640,6 +640,7 @@ elif IS_WINDOW:
 CPP_ABSOLUTE_PATH = _CPP_ABSOLUTE_PATH
 
 
+
 class LoadPluginCommand(sublime_plugin.WindowCommand):
 
     def run(self, **kwargs):
@@ -767,6 +768,35 @@ http://sourceforge.net/projects/mingw/files/ or cywing at http://cygwin.com/inst
             _settings.append(_setting)
         return _settings
 
+    def in_scope(self, view, location):
+        # if the cursor is inside a scope, 
+        # c header, will not show up.
+        #
+        # :view current view opened.
+        # :location current cursor location.
+        substr = view.substr(sublime.Region(0, view.size()))
+        in_scope = False
+        n = 0
+        i = copy.deepcopy(location)
+        j = copy.deepcopy(location)
+
+        while i > 0:
+            if substr[i] == '{':
+                n += 1
+                break
+            i -= 1
+
+        while j < view.size():
+            if substr[j] == '}':
+                n += 1
+                break
+            j += 1
+
+        if n == 2:
+            in_scope = not in_scope 
+
+        return in_scope
+
     def current_line(self, view, location):
         # will return the current line, where the programmer
         # is writting.
@@ -776,9 +806,19 @@ http://sourceforge.net/projects/mingw/files/ or cywing at http://cygwin.com/inst
         substr = view.substr(sublime.Region(0, location))
         if '#' in substr:
             sharp_index = substr.rindex('#')
-
             if '>' in substr or '"' in substr:
-                s = '>' if '>' in substr else '"'
+                mj = 0
+                qt = 0
+                if '>' in substr:
+                    mj = substr.rindex('>')
+                if '"' in substr:
+                    qt = substr.rindex('"')
+                
+                if mj > qt:
+                    s = '>'
+                else:
+                    s = '"'
+
                 great_index = substr.rindex(s)
                 if sharp_index > great_index:
                     return substr[sharp_index:]
@@ -788,9 +828,6 @@ http://sourceforge.net/projects/mingw/files/ or cywing at http://cygwin.com/inst
                 return substr[sharp_index:]
         else:
             return ''
-
-    def in_func_or_macro_scope(self):
-        return True
 
     def parse_result(self, substr, header, type):
         # Return a tuple, specifying if the header object
@@ -824,59 +861,61 @@ http://sourceforge.net/projects/mingw/files/ or cywing at http://cygwin.com/inst
         # if it is a c file, then execute code.
         if self.is_c_file(self.file_name()):
 
-            substr = self.current_line(view, location[0])
-            rx = GET_CH_DIR.search(substr)
+            if not self.in_scope(view, location[0]):
+                substr = self.current_line(view, location[0])
 
-            # clean self._paths.
-            self.clean()
-            
-            if rx:
-                # add current path, to self._paths,
-                # to autocomplete, c headers or others 
-                # directories.
-                # 
-                # sample:
-                #
-                # #include <linux/ <-- current posible path
-                #                         /usr/include/linux
-                #                         /usr/local/include/linux
-                start = rx.start()
-                end = rx.end()
+                rx = GET_CH_DIR.search(substr)
 
-                for _path in self._cache_paths:
-                    _abs_path = _path + substr[start:end] + os.sep
-                    if _obj_exists(_abs_path):
-                        self._paths.append(_abs_path)
+                # clean self._paths.
+                self.clean()
+                
+                if rx:
+                    # add current path, to self._paths,
+                    # to autocomplete, c headers or others 
+                    # directories.
+                    # 
+                    # sample:
+                    #
+                    # #include <linux/ <-- current posible path
+                    #                         /usr/include/linux
+                    #                         /usr/local/include/linux
+                    start = rx.start()
+                    end = rx.end()
 
-            else:
-                # add all paths again to self._paths
-                self._paths = self.copy_cache()
+                    for _path in self._cache_paths:
+                        _abs_path = _path + substr[start:end] + os.sep
+                        if _obj_exists(_abs_path):
+                            self._paths.append(_abs_path)
 
-            for path in self._paths:
-                _glob_result = glob.glob(path + prefix + "*")
-                if _glob_result:
-                    for item in _glob_result:
-                        
-                        if item.replace(path, "").startswith(prefix) and \
-                            not IS_C_FILE.match(item) and \
-                            (self.is_cpp_file(item) or _is_dir(item)) and \
-                            not IS_OTHER_FILE.match(item):
+                else:
+                    # add all paths again to self._paths
+                    self._paths = self.copy_cache()
 
-                            if _is_dir(item):
-                                _r = self.parse_result(
-                                    substr,
-                                    item.replace(path, ""),
-                                    "directory",
-                                )
-                            elif _is_file(item):
-                                _r = self.parse_result(
-                                    substr,
-                                    item.replace(path, ""),
-                                    "module",
-                                )
+                for path in self._paths:
+                    _glob_result = glob.glob(path + prefix + "*")
+                    if _glob_result:
+                        for item in _glob_result:
+                            
+                            if item.replace(path, "").startswith(prefix) and \
+                                not IS_C_FILE.match(item) and \
+                                (self.is_cpp_file(item) or _is_dir(item)) and \
+                                not IS_OTHER_FILE.match(item):
 
-                            # to eliminate repeteable values
-                            if _r not in result:
-                                result.append(_r)
-        return result
+                                if _is_dir(item):
+                                    _r = self.parse_result(
+                                        substr,
+                                        item.replace(path, ""),
+                                        "directory",
+                                    )
+                                elif _is_file(item):
+                                    _r = self.parse_result(
+                                        substr,
+                                        item.replace(path, ""),
+                                        "module",
+                                    )
+
+                                # to eliminate repeteable values
+                                if _r not in result:
+                                    result.append(_r)
+            return result
 
