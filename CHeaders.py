@@ -781,9 +781,16 @@ http://sourceforge.net/projects/mingw/files/ or cywing at http://cygwin.com/inst
         j = copy.deepcopy(location)
 
         while i > 0:
+            try:
+                # testing to avoid IndexError, idex out of range.
+                substr[i]
+            except:
+                break
+
             if substr[i] == '{':
                 n += 1
                 break
+
             i -= 1
 
         while j < view.size():
