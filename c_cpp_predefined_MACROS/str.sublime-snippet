@@ -1,8 +1,0 @@
-<snippet>
-	<content><![CDATA[
-#define str(__s__) #__s__
-]]></content>
-	<tabTrigger>str</tabTrigger>
-    <scope>source.c, source.c++</scope>
-	<description>#define str(__s__) #__s__</description>
-</snippet>

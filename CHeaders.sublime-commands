@@ -1,7 +1,0 @@
-[
-	{
-		"caption": "CHeaders: Load Plugin",
-		"command": "load_plugin",
-		"args": {"message": "Loading CHeaders plugin.. =D.."}
-	}
-]

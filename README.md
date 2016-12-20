@@ -13,7 +13,7 @@ locations, both windows and linux.
 - [x] /usr/local/include
 
 ####Window default locations.
-- [x] C:\\Mingw\\include
+- [x] C:\\Mingw\\include or C:\\cywing
 
 Note: if you don't have Mingw at C:\\, you shall add the Mingw path 
 to PATHS_HEADERS, at user settings.
@@ -46,8 +46,6 @@ to CHeaders, just add the path to PATH_HEADERS.
 }
 ```
 
-
-
 LICENCE.
 ========
 
@@ -73,36 +71,33 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE
 
+Version 0.0.6
+-------------
+	- redesigning the software, more faster, more precise and now plugin works from begining without reload
+	- Visual Studio(14, 12, 11) Beta support.
+	- snippets deleted
+
 Version 0.0.5
 -------------
-
 	- fixing bug, when current line is 0
-
 
 Version 0.0.4
 -------------
-
 	- now, c headers cannot be included in any scope. 
 
 Version 0.0.3
 -------------
-
 	- only c and c++, headers should be displayed. 
 
-
 Version 0.0.2
--------------
-	
+-------------	
 	- adding support for cpp version, from 4 to 6, in gnu
-
 
 Version 0.0.1
 -------------
-
 	- first release, first commit
 
 
 Contributor.
 ============
-
 - [x] Leonardo Esparis  leo.leo.leoxnidas.c.14@gmail.com

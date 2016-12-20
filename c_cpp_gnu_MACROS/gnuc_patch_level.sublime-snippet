@@ -1,8 +1,0 @@
-<snippet>
-	<content><![CDATA[
-__GNUC_PATCHLEVEL__
-]]></content>
-	<tabTrigger>__GNUC_PATCHLEVEL__</tabTrigger>
-	<scope>source.c, source.c++</scope>
-	<description>GNU MACRO</description>
-</snippet>
