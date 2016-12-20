@@ -7,5 +7,13 @@
     // example window: 
     // 		C:\
     // 		%HOME% <= Same => C:\
-    "PATHS_HEADERS" : []
+    "PATHS_HEADERS" : [],
+
+    // this options works, if u want
+    // to maintain the project by your self
+    "DEBUG": false,
+
+    // this options only works on
+    // debug mode.
+    "DEBUG_TAG": "CHeaders.py"
 }
