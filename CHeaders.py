@@ -18,29 +18,30 @@ IS_LINUX = sublime.platform() == "linux"
 IS_WINDOW = sublime.platform() == "windows"
 IS_OSX = sublime.platform() == 'osx'
 
-GNU_INCLUDE = '/usr/include/'
-GNU_LOCAL_INCLUDE = '/usr/local/include/'
-GNU_INCLUDE_32BITS = '/usr/include/i386-linux-gnu/'
-GNU_INCLUDE_64BITS = '/usr/include/x86_64-linux-gnu/'
-GNU_INCLUDE_CPP = '/usr/include/c++/'
-GNU_INCLUDE_CPP_32BITS = '/usr/include/i386-linux-gnu/c++/'
-GNU_INCLUDE_CPP_64BITS = '/usr/include/x86_64-linux-gnu/c++/'
+GNU_INCLUDE = os.path.realpath('/usr/include/')
+GNU_LOCAL_INCLUDE = os.path.realpath('/usr/local/include/')
+GNU_INCLUDE_32BITS = os.path.realpath('/usr/include/i386-linux-gnu/')
+GNU_INCLUDE_64BITS = os.path.realpath('/usr/include/x86_64-linux-gnu/')
+GNU_INCLUDE_CPP = os.path.realpath('/usr/include/c++/')
+GNU_INCLUDE_CPP_32BITS = os.path.realpath('/usr/include/i386-linux-gnu/c++/')
+GNU_INCLUDE_CPP_64BITS = os.path.realpath('/usr/include/x86_64-linux-gnu/c++/')
 
-MINGW_INCLUDE = 'C:\\Mingw\\include\\'
-MINGW32_INCLUDE = 'C:\\MinGW\\mingw32\\include\\'
-MINGW32_SYS = 'C:\\MinGW\\msys\\1.0\\include\\'
-MINGW32_INCLUDE_FIXED = 'C:\\MinGW\\mingw32\\lib\\gcc\\mingw32\\%s\\include\\'
-MINGW32_INCLUDE_FIXED2 = 'C:\\MinGW\\mingw32\\lib\\gcc\\mingw32\\%s\\include-fixed\\'
-MINGW_CPP_INCLUDE = 'C:\\MinGW\\mingw32\\lib\\gcc\\mingw32\\%s\\include\\c++\\'
+MINGW_INCLUDE = os.path.realpath('C:\\Mingw\\include\\')
+MINGW32_INCLUDE = os.path.realpath('C:\\MinGW\\mingw32\\include\\')
+MINGW32_SYS = os.path.realpath('C:\\MinGW\\msys\\1.0\\include\\')
+MINGW32_INCLUDE_FIXED = os.path.realpath('C:\\MinGW\\mingw32\\lib\\gcc\\mingw32\\%s\\include\\')
+MINGW32_INCLUDE_FIXED2 = os.path.realpath('C:\\MinGW\\mingw32\\lib\\gcc\\mingw32\\%s\\include-fixed\\')
+MINGW_CPP_INCLUDE = os.path.realpath('C:\\MinGW\\mingw32\\lib\\gcc\\mingw32\\%s\\include\\c++\\')
 
-CYWING_INCLUDE = 'C:\\cygwin\\usr\\include\\'
-CYWING_INCLUDE_CPP_32BITS = 'C:\\cygwin\\lib\\gcc\\i686-pc-cygwin\\%s\\include\\c++\\'
-CYWING_INCLUDE_CPP_64BITS = 'C:\\cygwin\\lib\\gcc\\x86_64-pc-cygwin\\%s\\include\\c++\\'
+CYWING_INCLUDE = os.path.realpath('C:\\cygwin\\usr\\include\\')
+CYWING_INCLUDE_CPP_32BITS = os.path.realpath('C:\\cygwin\\lib\\gcc\\i686-pc-cygwin\\%s\\include\\c++\\')
+CYWING_INCLUDE_CPP_64BITS = os.path.realpath('C:\\cygwin\\lib\\gcc\\x86_64-pc-cygwin\\%s\\include\\c++\\')
 
-VISUAL_STUDIO_14 = 'C:\\Program Files (x86)\\Microsoft Visual Studio 14.0'
-VISUAL_STUDIO_12 = 'C:\\Program Files (x86)\\Microsoft Visual Studio 12.0'
-VISUAL_STUDIO_11 = 'C:\\Program Files (x86)\\Microsoft Visual Studio 11.0'
-WINDOWS_KITS = 'C:\\Program Files (x86)\\Windows Kits'
+VISUAL_STUDIO_14 = os.path.realpath('C:\\Program Files (x86)\\Microsoft Visual Studio 14.0')
+VISUAL_STUDIO_12 = os.path.realpath('C:\\Program Files (x86)\\Microsoft Visual Studio 12.0')
+VISUAL_STUDIO_11 = os.path.realpath('C:\\Program Files (x86)\\Microsoft Visual Studio 11.0')
+WINDOWS_KITS = os.path.realpath('C:\\Program Files (x86)\\Windows Kits')
+MICROSOFT_SDK = os.path.realpath('C:\\Program Files (x86)\\Microsoft SDKs')
 
 CPP_SUPPORTED_VERSIONS = [
     "4.0.0",
@@ -439,8 +440,9 @@ class DirModel(Model):
     def clean_non_c_content(self, abspath, content):
         def _get_content(tmpContent, path):
             for fo in tmpContent:
-                if os.path.isdir(os.path.join(path, fo)) or re.match(IS_C_HEADER_EXP, fo) or 'c++' in path:
+                if os.path.isdir(os.path.join(path, fo)) or re.match(IS_C_HEADER_EXP, fo) or 'c++' in path or 'VC' in path:
                     yield fo
+
         for c in _get_content(content, abspath):
             fileobj = os.path.join(abspath, c)
             if os.path.isdir(fileobj):
@@ -524,6 +526,32 @@ elif IS_WINDOW:
         elif os.path.exists(VISUAL_STUDIO_11):
             path = VISUAL_STUDIO_11 + '\\VC\\include'
         INCLUDES += DirModel(path).parsed_includes()
+
+        if os.path.exists(VISUAL_STUDIO_14 + '\\DIA SDK\\include'):
+            INCLUDES += DirModel(VISUAL_STUDIO_14 + '\\DIA SDK\\include').parsed_includes()
+        elif os.path.exists(VISUAL_STUDIO_12 + '\\DIA SDK\\include'):
+            INCLUDES += DirModel(VISUAL_STUDIO_12 + '\\DIA SDK\\include').parsed_includes()
+        elif os.path.exists(VISUAL_STUDIO_11 + '\\DIA SDK\\include'):
+            INCLUDES += DirModel(VISUAL_STUDIO_11 + '\\DIA SDK\\include').parsed_includes()
+
+        if os.path.exists(os.path.join(VISUAL_STUDIO_14, 'VC\\atlmfc\\include')):
+            INCLUDES += DirModel(os.path.join(VISUAL_STUDIO_14, 'VC\\atlmfc\\include')).parsed_includes()
+        if os.path.exists(os.path.join(VISUAL_STUDIO_11, 'VC\\atlmfc\\include')):
+            INCLUDES += DirModel(os.path.join(VISUAL_STUDIO_11, 'VC\\atlmfc\\include')).parsed_includes()
+        if os.path.exists(os.path.join(VISUAL_STUDIO_11, 'VC\\atlmfc\\include')):
+            INCLUDES += DirModel(os.path.join(VISUAL_STUDIO_11, 'VC\\atlmfc\\include')).parsed_includes()
+
+        if os.path.exists(MICROSOFT_SDK):
+            if os.path.exists(os.path.join(MICROSOFT_SDK, 'Windows\\v7.0A\\Include')):
+                INCLUDES += DirModel(os.path.join(MICROSOFT_SDK, 'Windows\\v7.0A\\Include')).parsed_includes()
+            if os.path.exists(os.path.join(MICROSOFT_SDK, 'Windows\\v7.1A\\Include')):
+                INCLUDES += DirModel(os.path.join(MICROSOFT_SDK, 'Windows\\v7.1A\\Include')).parsed_includes()
+            if os.path.exists(os.path.join(MICROSOFT_SDK, 'Windows\\v8.1\\Include')):
+                INCLUDES += DirModel(os.path.join(MICROSOFT_SDK, 'Windows\\v8.1\\Include')).parsed_includes()
+            if os.path.exists(os.path.join(MICROSOFT_SDK, 'Windows\\v8.1A\\Include')):
+                INCLUDES += DirModel(os.path.join(MICROSOFT_SDK, 'Windows\\v8.1A\\Include')).parsed_includes()
+            if os.path.exists(os.path.join(MICROSOFT_SDK, 'Windows\\v10.1A\\Include')):
+                INCLUDES += DirModel(os.path.join(MICROSOFT_SDK, 'Windows\\v10.1A\\Include')).parsed_includes()
 
         if os.path.exists(WINDOWS_KITS):
             if os.path.exists(WINDOWS_KITS + '\\10\\Include\\10.0.10240.0\\ucrt\\'):
