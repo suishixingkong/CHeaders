@@ -8,6 +8,7 @@ import sublime_plugin
 
 # regular expressions
 IS_C_HEADER_EXP = r'.*\.[h|H|hpp|hxx]$'
+IS_C_CPP_FILE_EXP = r'.*\.[c|C|h|H|hpp|hxx|cpp|cxx|cc]$'
 
 # architecture
 ARCH = sublime.arch()
@@ -433,24 +434,19 @@ class DirModel(Model):
     def __init__(self, abspath):
         Model.__init__(self, abspath)
         self.type = 'directory'
-        self.content = self.clean_non_c_content(abspath, os.listdir(abspath))
+        self.content = list(self.clean_non_c_content(abspath, os.listdir(abspath)))
 
     def clean_non_c_content(self, abspath, content):
-
         def _get_content(tmpContent, path):
             for fo in tmpContent:
                 if os.path.isdir(os.path.join(path, fo)) or re.match(IS_C_HEADER_EXP, fo) or 'c++' in path:
                     yield fo
-
-        content = _get_content(content, abspath)
-        content_r = []
-        for c in content:
+        for c in _get_content(content, abspath):
             fileobj = os.path.join(abspath, c)
             if os.path.isdir(fileobj):
-                content_r.append(DirModel(fileobj))
+                yield DirModel(fileobj)
             else:
-                content_r.append(FileModel(fileobj))
-        return content_r
+                yield FileModel(fileobj)
 
     def parsed_includes(self):
         dirs = []
@@ -603,12 +599,9 @@ class CHeadersCommand(sublime_plugin.ViewEventListener):
                 o = True
                 def get_inner_includes(str_dir, includes):
                     # will return all includes already parsed
-                    tmp_includes2 = []
                     for inc in includes:
                         if inc[-1] == str_dir:
-                            tmp_includes2 = inc[-1].parsed_includes()
-                            break
-                    return tmp_includes2
+                            yield inc[-1].parsed_includes()
 
                 def find_inner_includes(pos, nw_substr, includes):
                     tmp_dir = ''
@@ -623,10 +616,10 @@ class CHeadersCommand(sublime_plugin.ViewEventListener):
                             tmp_dir = ''
                         tmp_i -= 1
 
-                    tmp_includes2 = get_inner_includes(tmp_dir, includes)
+                    tmp_includes2 = list(get_inner_includes(tmp_dir, includes))[0]
                     if len(dirs_where_to_find) >= 1:
                         for dwtf in reversed(dirs_where_to_find):
-                            tmp_includes2 = get_inner_includes(dwtf, tmp_includes2)
+                            tmp_includes2 = list(get_inner_includes(dwtf, tmp_includes2))[0]
                     return tmp_includes2
                 tmp_includes = find_inner_includes(i - 1, substr, tmp_includes)
             i -= 1
@@ -650,22 +643,13 @@ class CHeadersCommand(sublime_plugin.ViewEventListener):
         i = location - 1
         n = 0
 
-        if location == 1:
-            all_substr = self.view.substr(sublime.Region(0, self.view.size()))
-            try:
-                if all_substr[1] == '#':
-                    return False
-            except Exception as e:
-                self.logger.log(str(e))
-            return True
-
         while i >= 0:
             try:
                 substr[i]
             except:
                 break
 
-            if substr[i] == '#' or substr[i] == '<' or substr[i] == '\n' or substr[i] == '/':
+            if substr[i] == '<' or substr[i] == '/':
                 n += 1
                 break
             elif substr[i] == '>' or substr[i-1] in 'qwertyuioplkjhgfdsazxcvbnm123456789 ':
@@ -710,7 +694,7 @@ class CHeadersCommand(sublime_plugin.ViewEventListener):
         return True if n == 2 else False
 
     def is_c_or_cpp_file(self):
-        return re.match(r'.*\.[c|C|h|H|hpp|hxx|cpp|cxx|cc]$', self.filename())
+        return re.match(IS_C_CPP_FILE_EXP, self.filename())
 
     def filename(self):
         return os.path.basename(os.path.realpath(self.view.file_name()))
