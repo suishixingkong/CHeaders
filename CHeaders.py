@@ -394,12 +394,6 @@ class Model(object):
         self.parent_path = os.path.dirname(abspath)
         self.type = None
 
-    def is_file(self):
-        return False
-
-    def is_dir(self):
-        return False
-
     def parsed_name(self):
         return '%s\t%s' % (self.name, self.type)
 
@@ -425,9 +419,6 @@ class FileModel(Model):
 
     def parsed_include(self):
         return '#include <%s>' % self.name
-
-    def is_file(self):
-        return True
 
 class DirModel(Model):
 
@@ -456,9 +447,6 @@ class DirModel(Model):
 
     def parsed_include(self):
         return '#include <%s/' % self.name
-
-    def is_dir(self):
-        return True
 
 LAZY_CACHE = []
 def get_cpp_supported_version(path):
