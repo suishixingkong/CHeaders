@@ -1,0 +1,158 @@
+{
+  "systems" : [
+    {
+      "os": "linux",
+      "paths": [
+        {
+          "arch": "all",
+          "path": "/usr/include"
+        },
+        {
+          "arch": "all",
+          "path": "/usr/local/include"
+        },
+        {
+          "arch": "all",
+          "path": "/usr/include/c++"
+        },
+        {
+          "arch": "x86",
+          "path": "/usr/include/i386-linux-gnu"
+        },
+        {
+          "arch": "x86",
+          "path": "/usr/include/i386-linux-gnu/c++"
+        },
+        {
+          "arch": "x64",
+          "path": "/usr/include/x86_64-linux-gnu"
+        },
+        {
+          "arch": "x64",
+          "path": "/usr/include/x86_64-linux-gnu/c++"
+        },
+      ]
+    },
+    {
+      "os": "windows",
+      "paths": [
+        {
+          "arch": "all",
+          "path": "C:\\Mingw\\include"
+        },
+        {
+          "arch": "all",
+          "path": "C:\\MinGW\\msys\\1.0\\include"
+        },
+        {
+          "arch": "x86",
+          "path": "C:\\MinGW\\mingw32\\include"
+        },
+        {
+          "arch": "x86",
+          "path": "C:\\MinGW\\mingw32\\lib\\gcc\\mingw32\\%s\\include"
+        },
+        {
+          "arch": "x86",
+          "path": "C:\\MinGW\\mingw32\\lib\\gcc\\mingw32\\%s\\include-fixed"
+        },
+        {
+          "arch": "x86",
+          "path": "C:\\MinGW\\mingw32\\lib\\gcc\\mingw32\\%s\\include\\c++"
+        },
+        {
+          "arch": "all",
+          "path": "C:\\cygwin\\usr\\include"
+        },
+        {
+          "arch": "x86",
+          "path": "C:\\cygwin\\lib\\gcc\\i686-pc-cygwin\\%s\\include\\c++"
+        },
+        {
+          "arch": "x64",
+          "path": "C:\\cygwin\\lib\\gcc\\x86_64-pc-cygwin\\%s\\include\\c++"
+        },
+        {
+          "arch": "x64",
+          "path": "C:\\Program Files (x86)\\Microsoft Visual Studio 14.0"
+        },
+        {
+          "arch": "x64",
+          "path": "C:\\Program Files (x86)\\Microsoft Visual Studio 14.0\\VC\\include"
+        },
+        {
+          "arch": "x64",
+          "path": "C:\\Program Files (x86)\\Microsoft Visual Studio 14.0\\DIA SDK\\include"
+        },
+        {
+          "arch": "x64",
+          "path": "C:\\Program Files (x86)\\Microsoft Visual Studio 14.0\\VC\\atlmfc\\include"
+        },
+        {
+          "arch": "x64",
+          "path": "C:\\Program Files (x86)\\Microsoft Visual Studio 12.0\\VC\\include"
+        },
+        {
+          "arch": "x64",
+          "path": "C:\\Program Files (x86)\\Microsoft Visual Studio 12.0\\DIA SDK\\include"
+        },
+        {
+          "arch": "x64",
+          "path": "C:\\Program Files (x86)\\Microsoft Visual Studio 12.0\\VC\\atlmfc\\include"
+        },
+        {
+          "arch": "x64",
+          "path": "C:\\Program Files (x86)\\Microsoft Visual Studio 11.0\\VC\\include"
+        },
+        {
+          "arch": "x64",
+          "path": "C:\\Program Files (x86)\\Microsoft Visual Studio 11.0\\DIA SDK\\include"
+        },
+        {
+          "arch": "x64",
+          "path": "C:\\Program Files (x86)\\Microsoft Visual Studio 11.0\\VC\\atlmfc\\include"
+        },
+        {
+          "arch": "x64",
+          "path": "C:\\Program Files (x86)\\Windows Kits\\10\\Include\\10.0.10240.0\\ucrt"
+        },
+        {
+          "arch": "x64",
+          "path": "C:\\Program Files (x86)\\Windows Kits\\10\\Include\\10.0.10150.0\\ucrt"
+        },
+        {
+          "arch": "x64",
+          "path": "C:\\Program Files (x86)\\Windows Kits\\8.1\\Include"
+        },
+        {
+          "arch": "x64",
+          "path": "C:\\Program Files (x86)\\Windows Kits\\NETFXSDK\\4.6.1\\Include"
+        },
+        {
+          "arch": "x64",
+          "path": "C:\\Program Files (x86)\\Microsoft SDKs\\Windows\\v7.0A\\Include"
+        },
+        {
+          "arch": "x64",
+          "path": "C:\\Program Files (x86)\\Microsoft SDKs\\Windows\\v7.1A\\Include"
+        },
+        {
+          "arch": "x64",
+          "path": "C:\\Program Files (x86)\\Microsoft SDKs\\Windows\\v8.1\\Include"
+        },
+        {
+          "arch": "x64",
+          "path": "C:\\Program Files (x86)\\Microsoft SDKs\\Windows\\v8.1A\\Include"
+        },
+        {
+          "arch": "x64",
+          "path": "C:\\Program Files (x86)\\Microsoft SDKs\\Windows\v10.1A\\Include"
+        },
+      ]
+    },
+    {
+      "os": "osx",
+      "paths": []
+    }
+  ]
+}
