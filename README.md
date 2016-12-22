@@ -8,13 +8,15 @@ By default, CHeaders will find c/c++ headers at default
 locations, both windows and linux.
 
 ####Linux default locations.
-	- /usr/include
-	- /usr/local/include
+	/usr/include
+	/usr/local/include
 
 ####Window default locations.
-	- C:\\Mingw\\include or C:\\cywing
+	C:\Mingw
+	C:\cywing
+	C:\Program Files (x86)\Microsoft Visual Studio 1X.0
 
-Note: if you don't have Mingw at C:\\, you shall add the Mingw path 
+Note: if you don't have Mingw at C:\, you shall add the Mingw path 
 to PATHS_HEADERS, at user settings.
 
 Usage.
