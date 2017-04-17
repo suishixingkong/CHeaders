@@ -7,11 +7,11 @@ to help you to find c/c++ headers files and mingw, gnu.
 By default, CHeaders will find c/c++ headers at default 
 locations, both windows and linux.
 
-##Linux default locations.
+* Linux default locations.
 	- /usr/include
 	- /usr/local/include
 
-##Window default locations.
+* Window default locations.
 	- C:\\Mingw\\include or C:\\cywing
 
 Note: if you don't have Mingw at C:\\, you shall add the Mingw path 
