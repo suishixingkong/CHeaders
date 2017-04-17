@@ -26,12 +26,6 @@ All you need to do is write the library you want to search.
 ![example_complention2](./images/img3.png)
 ![example_complention3](./images/img4.png)
 
-If the plugin does not work well, just press Ctrl+shift+p(linux, windows), then
-find the command **CHeaders: Load Plugin** and press enter, and then, the CHeaders 
-plugin shall work correctly...
-
-![example](./images/img.png)
-
 
 Configuring.
 ============
