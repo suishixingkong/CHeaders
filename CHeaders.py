@@ -7,8 +7,8 @@ import sublime
 import sublime_plugin
 
 # regular expressions
-IS_C_HEADER_EXP = r'.*\.[h|H|hpp|hxx]$'
-IS_C_CPP_FILE_EXP = r'.*\.[c|C|h|H|hpp|hxx|cpp|cxx|cc]$'
+IS_C_HEADER_EXP = r'.*\.(h|hpp|hxx)$'
+IS_C_CPP_FILE_EXP = r'.*\.(c|h|hpp|hxx|cpp|cxx|cc)$'
 
 # architecture
 ARCH = sublime.arch()
@@ -430,7 +430,7 @@ class DirModel(Model):
     def clean_non_c_content(self, abspath, content):
         def _get_content(tmpContent, path):
             for fo in tmpContent:
-                if os.path.isdir(os.path.join(path, fo)) or re.match(IS_C_HEADER_EXP, fo) or 'c++' in path:
+                if os.path.isdir(os.path.join(path, fo)) or re.match(IS_C_HEADER_EXP, fo, re.IGNORECASE) or 'c++' in path:
                     yield fo
         for c in _get_content(content, abspath):
             fileobj = os.path.join(abspath, c)
@@ -682,7 +682,7 @@ class CHeadersCommand(sublime_plugin.ViewEventListener):
         return True if n == 2 else False
 
     def is_c_or_cpp_file(self):
-        return re.match(IS_C_CPP_FILE_EXP, self.filename())
+        return re.match(IS_C_CPP_FILE_EXP, self.filename(), re.IGNORECASE)
 
     def filename(self):
         return os.path.basename(os.path.realpath(self.view.file_name()))
